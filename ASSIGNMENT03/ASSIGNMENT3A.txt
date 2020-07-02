@@ -1,0 +1,141 @@
+                   J E S 2  J O B  L O G  --  S Y S T E M  2 9 6 4  --  N O D E  S V S C J E S 2
+ 
+20.43.35 JOB09504 ---- WEDNESDAY, 01 JUL 2020 ----
+20.43.35 JOB09504  IRR010I  USERID KC03C9C  IS ASSIGNED TO THIS JOB.
+20.43.36 JOB09504  ICH70001I KC03C9C  LAST ACCESS AT 20:42:43 ON WEDNESDAY, JULY 1, 2020
+20.43.36 JOB09504  $HASP373 KC03C9C  STARTED - INIT 2    - CLASS A        - SYS 2964
+20.43.36 JOB09504  $HASP395 KC03C9C  ENDED - RC=0000
+------ JES2 JOB STATISTICS ------
+  01 JUL 2020 JOB EXECUTION DATE
+           50 CARDS READ
+          102 SYSOUT PRINT RECORDS
+            0 SYSOUT PUNCH RECORDS
+           10 SYSOUT SPOOL KBYTES
+         0.00 MINUTES EXECUTION TIME
+        1 //KC03C9C JOB ,'BRAYAN CHACHA G.',MSGCLASS=H                            JOB09504
+        2 //JSTEP01  EXEC PGM=ASSIST
+        3 //STEPLIB  DD DSN=KC00NIU.ASSIST.LOADLIB,DISP=SHR
+        4 //SYSPRINT DD SYSOUT=*
+        5 //SYSIN    DD *
+        6 //
+ICH70001I KC03C9C  LAST ACCESS AT 20:42:43 ON WEDNESDAY, JULY 1, 2020
+IEFA111I KC03C9C IS USING THE FOLLOWING JOB RELATED SETTINGS:
+         SWA=ABOVE,TIOT SIZE=32K,DSENQSHR=DISALLOW,GDGBIAS=JOB
+IEF236I ALLOC. FOR KC03C9C JSTEP01
+IGD103I SMS ALLOCATED TO DDNAME STEPLIB
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I JES2 ALLOCATED TO SYSIN
+IEF142I KC03C9C JSTEP01 - STEP WAS EXECUTED - COND CODE 0000
+IGD104I KC00NIU.ASSIST.LOADLIB                       RETAINED,  DDNAME=STEPLIB
+IEF285I   KC03C9C.KC03C9C.JOB09504.D0000102.?          SYSOUT
+IEF285I   KC03C9C.KC03C9C.JOB09504.D0000101.?          SYSIN
+IEF373I STEP/JSTEP01 /START 2020183.2043
+IEF032I STEP/JSTEP01 /STOP  2020183.2043
+        CPU:     0 HR  00 MIN  00.00 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+        VIRT:   584K  SYS:   244K  EXT:        0K  SYS:    12136K
+        ATB- REAL:                  1056K  SLOTS:                     0K
+             VIRT- ALLOC:      13M SHRD:       0M
+IEF375I  JOB/KC03C9C /START 2020183.2043
+IEF033I  JOB/KC03C9C /STOP  2020183.2043
+        CPU:     0 HR  00 MIN  00.00 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+******************************************************************
+*                                                                *
+*  CSCI 360               ASSIGNMENT 3              SUMMER 2020  *
+*                                                                *
+*  DATE DUE:  07/03/2020                                         *
+*  TIME DUE:  11:59 PM                                           *
+*                                                                *
+*  Replace KC03nnn above with your KC-ID assigned to you by      *
+*  your instructor.  DO NOT LEAVE OUT THE CAPITAL LETTER A AT    *
+*  THE END OF YOUR KC-ID!  Also, put your name in all capital    *
+*  letters in the first line where it says 'your name here'.     *
+*                                                                *
+*  Note that this documentation box does not go past column 65!  *
+*                                                                *
+******************************************************************
+*        COL. 10
+*        |     COL. 16
+*        |     |
+*        v     v
+ASSIGN3A CSECT
+         USING ASSIGN3A,15     ESTABLISH ADDRESSABILITY ON REG 15
+*
+         L     2,FIRST     LOAD THE CONTENTS OF FIRST INTO R2
+         L     3,SECOND    LOAD THE CONTENTS OF SECOND INTO R3
+*
+*LOADING REGISTERS 4 AND 5 FOR THE ADDITION
+*
+         L     4,FIRST     LOAD THE CONTENTS OF FIRST INTO R4
+         L     5,SECOND    LOAD THE CONTENTS OF SECOND INTO R5
+*
+         SR    3,2         SUBTRACTION OF SECOND FROM FIRST
+         AR    4,5         ADDITION OF FIRST AND SECOND
+*
+         XDUMP ,           DUMP CONTENTS OF ALL 16 REGS
+*
+         BCR   B'1111',14  UNCONDITIONAL RETURN TO CALLER (OS)
+*
+FIRST    DC    F'97'       DECLARING FIRST FULLWORD
+SECOND   DC    F'33'       DECLARING SECOND FILLWORD
+*
+         LTORG             LITERAL ORGANIZATION
+*
+         END   ASSIGN3A
+*** ASSIST 4.0/A2-05/15/82  470/V7A/0:OS/VS2  INS=SDFP7/X=BGHO, CHECK/TRC/=1180, OPTS=CDKMPR FROM PENN ST*NIU COMPSCI*LT
+ 
+                                                                                                               PAGE    1
+  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+                                      1 ******************************************************************
+                                      2 *                                                                *
+                                      3 *  CSCI 360               ASSIGNMENT 3              SUMMER 2020  *
+                                      4 *                                                                *
+                                      5 *  DATE DUE:  07/03/2020                                         *
+                                      6 *  TIME DUE:  11:59 PM                                           *
+                                      7 *                                                                *
+                                      8 *  Replace KC03nnn above with your KC-ID assigned to you by      *
+                                      9 *  your instructor.  DO NOT LEAVE OUT THE CAPITAL LETTER A AT    *
+                                     10 *  THE END OF YOUR KC-ID!  Also, put your name in all capital    *
+                                     11 *  letters in the first line where it says 'your name here'.     *
+                                     12 *                                                                *
+                                     13 *  Note that this documentation box does not go past column 65!  *
+                                     14 *                                                                *
+                                     15 ******************************************************************
+                                     16 *        COL. 10
+                                     17 *        |     COL. 16
+                                     18 *        |     |
+                                     19 *        v     v
+000000                               20 ASSIGN3A CSECT
+000000                               21          USING ASSIGN3A,15     ESTABLISH ADDRESSABILITY ON REG 15
+                                     22 *
+000000 5820 F01C            0001C    23          L     2,FIRST     LOAD THE CONTENTS OF FIRST INTO R2
+000004 5830 F020            00020    24          L     3,SECOND    LOAD THE CONTENTS OF SECOND INTO R3
+                                     25 *
+                                     26 *LOADING REGISTERS 4 AND 5 FOR THE ADDITION
+                                     27 *
+000008 5840 F01C            0001C    28          L     4,FIRST     LOAD THE CONTENTS OF FIRST INTO R4
+00000C 5850 F020            00020    29          L     5,SECOND    LOAD THE CONTENTS OF SECOND INTO R5
+                                     30 *
+000010 1B32                          31          SR    3,2         SUBTRACTION OF SECOND FROM FIRST
+000012 1A45                          32          AR    4,5         ADDITION OF FIRST AND SECOND
+                                     33 *
+000014 E160 0000 0000 00000          34          XDUMP ,           DUMP CONTENTS OF ALL 16 REGS
+                                     35 *
+00001A 07FE                          36          BCR   B'1111',14  UNCONDITIONAL RETURN TO CALLER (OS)
+                                     37 *
+00001C 00000061                      38 FIRST    DC    F'97'       DECLARING FIRST FULLWORD
+000020 00000021                      39 SECOND   DC    F'33'       DECLARING SECOND FILLWORD
+                                     40 *
+                                     41          LTORG             LITERAL ORGANIZATION
+                                     42 *
+                                     43          END   ASSIGN3A
+***  NO   STATEMENTS FLAGGED -  NO   WARNINGS,  NO   ERRORS
+*** DYNAMIC CORE AREA USED:  LOW:    1196 HIGH:     388 LEAVING:  491984 FREE BYTES. AVERAGE:       36 BYTES/STMT ***
+*** ASSEMBLY TIME =    0.000 SECS,    44000 STATEMENTS/SEC ***
+*** PROGRAM EXECUTION BEGINNING - ANY OUTPUT BEFORE EXECUTION TIME MESSAGE IS PRODUCED BY USER PROGRAM ***
+BEGIN XSNAP - CALL     1 AT E000001A USER REGISTERS
+ REGS 0-7      F4F4F4F4    F4F4F4F4    00000061    FFFFFFC0    00000082    00000021    F4F4F4F4    F4F4F4F4
+ REGS 8-15     F4F4F4F4    F4F4F4F4    F4F4F4F4    F4F4F4F4    F4F4F4F4    00000028    FFFE7960    00000000
+ 
+*** EXECUTION TIME =    0.000 SECS.         8 INSTRUCTIONS EXECUTED -     8000 INSTRUCTIONS/SEC ***
+*** FIRST CARD NOT READ: NO CARDS READ:FILE UNOPENED
+*** AM004 - NORMAL USER TERMINATION BY RETURN ***
