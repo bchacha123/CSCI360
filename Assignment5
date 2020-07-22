@@ -1,0 +1,226 @@
+//KC03C9C JOB ,'BRAYAN CHACHA G',MSGCLASS=H
+//JSTEP01  EXEC PGM=ASSIST
+//STEPLIB  DD DSN=KC00NIU.ASSIST.LOADLIB,DISP=SHR
+//SYSPRINT DD SYSOUT=*
+//SYSIN    DD *
+******************************************************************
+*                                                                *
+*  CSCI 360               ASSIGNMENT 6              SUMMER 2020  *
+*                                                                *
+*  PROGRAMMER NAME: BRAYAN CHACHA GONZALEZ                       *
+*                                                                *
+*             DATE: 7/17/20                                      *
+*                                                                *
+*     PROGRAM NAME: PAYROLL1                                     *
+*                                                                *
+*         FUNCTION: MULTIPLICATION AND DIVISION                  *
+*                                                                *
+*           NOTES:                                               *
+*                                                                *
+******************************************************************
+*        COL. 10                                                 *
+*        |     COL. 16          COMMENTS                         *
+*        |     |                |                                *
+*        v     v                v                                *
+******************************************************************
+PAYROLL1 CSECT
+         USING PAYROLL1,15
+*
+         LA    3,0
+         LA    4,100              100 NEEDED FOR NET PAY
+         LA    5,18               LOADING CURRENT WITHOLDING %
+         LA    6,0
+         LA    7,0
+         LA    8,0
+         LA    9,0                COUNTER FOR NUM OF EMP
+         LA    10,0               SUM OF DEDUCTIONS
+         LA    11,0
+         LA    12,0
+*
+         LTORG
+*
+         XREAD  BUFFER,80          READING 80 BYTES FROM INPUT
+*
+         XREAD  BUFFER,80
+*
+*
+******************************************************************
+RLOOP    BC     B'0100',ELOOP       BRANCH TO ELOOP IF EOF
+         A      9,=F'1'             ADDING A COUNTER FOR EMPL
+*
+         MVC    EMPNAME(25),BUFFER  COPYING DATA TO TABLE EMPNAME
+         MVC    EMPID(5),BUFFER+25  COPYING DATA TO GET EMPID
+*
+         LA     6,1(6)
+         XDECI  2,BUFFER+31         SETTING HR PAY TO REG2
+         XDECO  2,HRPAY             PRINT HR PAY TO PRINT LINE
+         XDECI  3,BUFFER+34         SETTING HOURS WORKED TO REG3
+         XDECO  3,NHOUR             PRINT # HR'S WORKED TO PRTLN
+*
+         MR     2,2                 MULTIPLY HRS WORKED x HR PAY
+*
+         XDECI  2,BUFFER+37         SETTING DEDUC TO REG2
+*
+         SR     3,2                 SUB DEC FROM REG 2
+         XDECO  2,DEAMT             PRINT DEDUCTION AMT TO REG2
+*
+         XDECI  2,BUFFER+40         SETTING BONUS TO REG3
+*
+         XDECO  2,BONUS             PRINT BONUS TO REG 2
+*
+*                                   ARITHMATIC GROSS,NET,TOTAL
+*
+         AR     3,2                 ADD DECTUION AND BONUS
+*
+         XDECO  3,GRPAY             PRINT GROSS AMT TO PRNTLN
+*
+         LR     11,3                LOAD REG11 WITH GROSS PAY
+*
+         MR     2,5                 MULTIPLYING GROSS AND WITHOLD
+*
+         DR     2,4                 DIVIDE GROSS / 100
+*
+         SR     2,3                 GETTING NET PAY
+*
+         SR     11,3
+*
+*         LR     2,12
+*
+         A      3,=F'1'
+         XDECO  3,NEPAY             PRINTING NET PAY TO PRTLINE
+*
+*        LR     12,3                LOADING NET TO REG12
+*
+         SR     12,11               TOTAL
+*
+         XDECO  11,ETOTAL           PRINTING TOTAL TO PRTLINE
+*
+         XPRNT  PRTLINE,133         PRNT 133 FROM PTRLINE
+*
+         XREAD  BUFFER,80           BUFFER 80 BYTES
+*
+         BC     B'1111',RLOOP       BRANCH BACK TO RLOOP
+*
+ELOOP    DS     0H
+*
+         XDECO  9,TOTAL             PRINTING NUM OF EMP TO PRTLINE
+*
+         XDECO  10,SMDEC            PRINING SUM OF DEDUCTIONS
+*
+         XPRNT  OTOTAL,36           OUTPUT NUM OF EMP
+*
+         XPRNT  OSDEC,36            OUTPUT SUM OF DEDUCTIONS
+*
+         XPRNT  OTBON,36            OUTPUT SUM OF BONUS
+*
+         XPRNT  OGPAY,36            OUTPUT SUM OF GROSS PAY
+*
+         XPRNT  OWHOL,36            OUTPUT SUM OF WITHOLD
+*
+         XPRNT  OTONE,36            OUTPUT SUM OF TOTAL NET PAY
+*
+         XPRNT  OAVGP,36            OUTPUT OF AVR OF GROSS PAY
+*
+         XPRNT  OAVNT,36            OUTPUT OF AVR OF NET PAY
+         XDUMP  ,
+         BCR    B'1111',14          BACK TO THE OSYSTEM
+*
+         LTORG                      ORGANIZER LITERAL
+*
+******************************************************************
+*
+BUFFER   DS     CL80                DEFINING DATA INPUT
+*
+PRTLINE  DC     C'0'
+*        DC     8C' '
+*
+EMPNAME  DS     CL25                STORAGE FOR EMP NAME
+         DC     2C' '
+*
+EMPID    DS     CL5                 STORAGE FOR EMP ID
+         DC     2C' '
+*
+HRPAY    DS     CL12                STORAGE FOR HOURLY PAY
+         DC     3C' '
+*
+NHOUR    DS     CL12                STORAGE FOR # OF HOURS
+         DC     3C' '
+*
+DEAMT    DS     CL12                STORAGE FOR DEDUCTION AMT
+         DC     3C' '
+*
+BONUS    DS     CL12                STORAGE FOR BONUS AMT
+         DC     3C' '
+*
+GRPAY    DS     CL12                STORAGE FOR GROSS AMT
+         DC     2C' '
+*
+NEPAY    DS     CL12                STORAGE FOR NET PAY AMT
+         DC     1C' '
+*                                   STORAGE FOR TOTAL
+ETOTAL   DS     CL12
+         DC     1C' '
+*
+OTOTAL   DC     C'0 TOTAL EMPLOYEE COUNT: '
+TOTAL    DS     CL60
+*
+OSDEC    DC     C'0 TOTAL DEDUCTIONS: '
+SMDEC    DS     CL60
+*
+OTBON    DC     C'0 TOTAL BONUSES: '
+TBONU    DS     CL60
+*
+OGPAY    DC     C'0 TOTAL GROSS PAY: '
+GPAY     DS     CL60
+*
+OWHOL    DC     C'0 TOTAL WITHOLDING: '
+WHOLD    DS     CL60
+*
+OTONE    DC     C'0 TOTAL NET PAY: '
+TONE     DS     CL60
+*
+OAVGP    DC     C'0 AVERAGE GROSS PAY: '
+AVGP     DS     CL60
+*
+OAVNT    DC     C'0 AVERAGE NET PAY: '
+AVNT     DS     CL60
+*
+LINE1    DC     C'0'
+         DC     15C' '
+         DC     C'TOTAL EMPLOYEE COUNT: '
+TOTEMPL  DS     CL12
+*         DC     84C' '
+*
+LINE2    DC     C'0'
+         DC     19C' '
+         DC     C'TOTAL DEDUCTIONS: '
+TOTDEDCT DS     CL12
+         DC     84C' '
+*
+LINE3    DC     C'0'
+         DC     22C' '
+         DC     C'TOTAL BONUSES: '
+TOTBONUS DS     CL12
+         DC     84C' '
+*
+LINE4    DC     C'0'
+         DC     20C' '
+         DC     C'TOTAL GROSS PAY: '
+TOTGRPAY DS     CL12
+         DC     84C' '
+*
+LINE5    DC     C'0'
+         DC     18C' '
+         DC     C'AVERAGE GROSS PAY: '
+AVGGRPAY DS     CL12
+         DC     84C' '
+*
+         END   PAYROLL1
+/*
+//*
+//FT05F001 DD DSN=KC02322.CSCI360.DATASU20(DATA5),DISP=SHR
+//*
+//FT06F001 DD SYSOUT=*
+//*
+//SYSPRINT DD SYSOUT=*
+// 
