@@ -1,0 +1,518 @@
+                   J E S 2  J O B  L O G  --  S Y S T E M  2 9 6 4  --  N O D E  S V S C J E S 2
+ 
+14.26.07 JOB03561 ---- WEDNESDAY, 22 JUL 2020 ----
+14.26.07 JOB03561  IRR010I  USERID KC03C9C  IS ASSIGNED TO THIS JOB.
+14.26.07 JOB03561  ICH70001I KC03C9C  LAST ACCESS AT 14:24:01 ON WEDNESDAY, JULY 22, 2020
+14.26.07 JOB03561  $HASP373 KC03C9C  STARTED - INIT 2    - CLASS A        - SYS 2964
+14.26.07 JOB03561  $HASP395 KC03C9C  ENDED - RC=0000
+------ JES2 JOB STATISTICS ------
+  22 JUL 2020 JOB EXECUTION DATE
+          221 CARDS READ
+          314 SYSOUT PRINT RECORDS
+            0 SYSOUT PUNCH RECORDS
+           28 SYSOUT SPOOL KBYTES
+         0.00 MINUTES EXECUTION TIME
+        1 //KC03C9C JOB ,'BRAYAN CHACHA G',MSGCLASS=H                             JOB03561
+        2 //JSTEP01  EXEC PGM=ASSIST
+        3 //STEPLIB  DD DSN=KC00NIU.ASSIST.LOADLIB,DISP=SHR
+        4 //SYSPRINT DD SYSOUT=*
+        5 //SYSIN    DD *
+          //*
+        6 //FT05F001 DD DSN=KC02322.CSCI360.DATASU20(DATA5),DISP=SHR
+          //*
+        7 //FT06F001 DD SYSOUT=*
+          //*
+        8 //SYSPRINT DD SYSOUT=*
+        9 //
+ICH70001I KC03C9C  LAST ACCESS AT 14:24:01 ON WEDNESDAY, JULY 22, 2020
+IEFA111I KC03C9C IS USING THE FOLLOWING JOB RELATED SETTINGS:
+         SWA=ABOVE,TIOT SIZE=32K,DSENQSHR=DISALLOW,GDGBIAS=JOB
+IEF236I ALLOC. FOR KC03C9C JSTEP01
+IGD103I SMS ALLOCATED TO DDNAME STEPLIB
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I JES2 ALLOCATED TO SYSIN
+IGD103I SMS ALLOCATED TO DDNAME FT05F001
+IEF237I JES2 ALLOCATED TO FT06F001
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF142I KC03C9C JSTEP01 - STEP WAS EXECUTED - COND CODE 0000
+IGD104I KC00NIU.ASSIST.LOADLIB                       RETAINED,  DDNAME=STEPLIB
+IEF285I   KC03C9C.KC03C9C.JOB03561.D0000102.?          SYSOUT
+IEF285I   KC03C9C.KC03C9C.JOB03561.D0000101.?          SYSIN
+IGD104I KC02322.CSCI360.DATASU20                     RETAINED,  DDNAME=FT05F001
+IEF285I   KC03C9C.KC03C9C.JOB03561.D0000103.?          SYSOUT
+IEF285I   KC03C9C.KC03C9C.JOB03561.D0000104.?          SYSOUT
+IEF373I STEP/JSTEP01 /START 2020204.1426
+IEF032I STEP/JSTEP01 /STOP  2020204.1426
+        CPU:     0 HR  00 MIN  00.00 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+        VIRT:   584K  SYS:   248K  EXT:        0K  SYS:    12220K
+        ATB- REAL:                  4128K  SLOTS:                     0K
+             VIRT- ALLOC:      13M SHRD:       0M
+IEF375I  JOB/KC03C9C /START 2020204.1426
+IEF033I  JOB/KC03C9C /STOP  2020204.1426
+        CPU:     0 HR  00 MIN  00.00 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+******************************************************************
+*                                                                *
+*  CSCI 360               ASSIGNMENT 6              SUMMER 2020  *
+*                                                                *
+*  PROGRAMMER NAME: BRAYAN CHACHA GONZALEZ                       *
+*                                                                *
+*             DATE: 7/17/20                                      *
+*                                                                *
+*     PROGRAM NAME: PAYROLL1                                     *
+*                                                                *
+*         FUNCTION: MULTIPLICATION AND DIVISION                  *
+*                                                                *
+*            NOTES: COULN'T GET THE TOTAL OF THE GROSS COLLUMN,  *
+*                   NET, AND TOTAL AND AVERAGES                  *
+*                                                                *
+*   REGISTER USAGE:                                              *
+*                   R2 HOURLY PAY                                *
+*                   R3 AMOUNT OF HOURS WORKED                    *
+*                   R4 DEDUCTION AMOUNT                          *
+*                   R5 BONUS AMOUNT                              *
+*                   R6 TOTAL AMOUNT OF BONUS                     *
+*                   R7 NET AMOUNT                                *
+*                  R11 GROSS AMOUNT                              *
+*                  R12 INPUT DATA                                *
+*                  R13 TOTAL AMOUNT OF DEDUCTION                 *
+******************************************************************
+*        COL. 10                                                 *
+*        |     COL. 16          COMMENTS                         *
+*        |     |                |                                *
+*        v     v                v                                *
+******************************************************************
+PAYROLL1 CSECT
+         USING PAYROLL1,15
+*                               SETTING REGS TO 0, CLEARING
+         LA    2,0
+         LA    3,0
+         LA    4,0
+         LA    5,0
+         LA    6,0
+         LA    7,0
+         LA    8,0
+         LA    9,0
+         LA    10,0
+         LA    11,0
+         LA    12,0
+         LA    13,0
+******************************************************************
+         XREAD BUFFER,80            READING 80 BYTES FROM INPUT
+         XDECI 12,BUFFER            INPUT DATA TO REG12
+*
+         XREAD BUFFER,80            READING FIRST INPUT NAMES
+*
+RLOOP    BC    B'0100',ELOOP        BRANCH TO ELOOP IF EOF
+*
+         MVC   EMPNAME(25),BUFFER   COPYING DATA TO TABLE EMPNAME
+         MVC   EMPID(5),BUFFER+25   COPYING DATA TO GET EMPID
+*
+         XDECI 2,BUFFER+31          SETTING HR PAY TO REG2
+         XDECO 2,HRPAY              PRINT HR PAY TO PRTLN
+*
+         XDECI 3,BUFFER+34          SETTING HOURS WORKED TO REG3
+         XDECO 3,NHOUR              PRINT # HR'S WORKED TO PRTLN
+*
+         XDECI 4,BUFFER+37          SETTING DEDUC TO REG4
+         AR    13,4                 ADDING DEDUC AND PLACING IN RE13
+*
+         XDECO 4,ODEDUCT            PRINT DEDUC TO PRTLN
+         XDECI 5,BUFFER+40          SETTING BONUS TO REG5
+         AR    6,5                  ADDING BONUS AND PLACING IN RE6
+         XDECO 5,OBONUS             PRINT BONUS TO PRTLN
+*
+******************************************************************
+*                      CALCULATIONS                              *
+******************************************************************
+*
+         SR    10,10                CLEARING REG10
+         SR    11,11                CLEARING REG11
+         LR    11,2                 LOAD REG2 INTO REG11
+         MR    10,3                 REG11 x REG3
+         SR    11,4                 SUB REG4 FROM REG11
+         AR    11,5                 ADD REG5 TO REG11
+*
+         XDECO 11,OGROSS            GROSS PAY TO REG11
+*
+         LA    2,0                  WRONG TRYING TO GET TOTAL OF
+         AR    2,11                 GROSS
+*
+         LR    7,11                 CALCULATING NET PAY
+         MR    10,12
+         M     10,=F'1'             MULTIPLYING WITHOLD
+         D     10,=F'100'
+         LR    8,11
+         SR    7,11
+         XDECO 7,ONET               PRINT NETPAY TO PRTLN
+*
+         SR    7,11
+         XDECO 7,OWITH              PRINT WITHOLD TO PRNT
+*
+         A     9,=F'1'              EMPLOYEE COUNTER
+         XDECO 9,TOTEMP              PRINT NUM OF EMPLOYEES
+*
+         XPRNT PRTLINE,133          PRNT 133 FROM PTRLINE
+         XREAD BUFFER,80            BUFFER 80 BYTES
+*
+         BC    B'1111',RLOOP        BRANCH BACK TO RLOOP
+ELOOP    DS    0H
+*
+         XDECO 13,TOTDEDCT          SENDING TO PTRLN, BOTTOM
+         XDECO 6,TOTBONUS
+         XDECO 2,TOTGRPAY
+         XPRNT OLINE,133            PRINT TOTAL EMPLOYEES
+         XPRNT OLINE2,133           PRINT TOTAL DEDUCTIONS
+         XPRNT OLINE3,133           PRINT TOTAL BONUSES
+         XPRNT OLINE4,133           PRINT TOTAL GROSS PAY
+         XPRNT OLINE5,133           PRINT TOTAL WITHOLDING
+         XPRNT OLINE6,133           PRINT TOTAL NETPAY
+         XPRNT OLINE7,133           PRINT TOTAL GROSS P AVERAGE
+         XPRNT OLINE8,133           PRINT TOTAL NET PAY AVERAGE
+*
+         BCR   B'1111',14           GOING BACK TO THE OSYSTEM
+         LTORG                      ORGANIZER LITERAL
+*
+******************************************************************
+*
+BUFFER   DS    CL80                DEFINING DATA INPUT
+*
+PRTLINE  DC    C'0'
+*
+EMPNAME  DS     CL25               STORAGE FOR EMP NAME
+         DC    C' '
+*
+EMPID    DS    CL5                 STORAGE FOR EMP ID
+         DC    2C' '
+*
+HRPAY    DS    CL12                STORAGE FOR HOURLY PAY
+         DC    2C' '
+*
+NHOUR    DS    CL12                STORAGE FOR # OF HOURS
+         DC    2C' '
+*
+ODEDUCT  DS    CL12                STORAGE FOR DEDUCTIONS
+         DC    2C' '
+*
+OBONUS   DS    CL12                STORAGE FOR BONUS
+         DC    2C' '
+*
+OGROSS   DS    CL12                STORAGE FOR GROSS PAY
+         DC    2C' '
+*
+OWITH    DS    CL12                STORAGE FOR WITHOLD
+         DC    2C' '
+*
+ONET     DS    CL12                STORAGE FOR NETPAY
+         DC    3C' '
+*
+******************************************************************
+*                      BOTTOM HEADER                             *
+******************************************************************
+OLINE    DC    C'0'
+         DC    15C' '
+         DC    C'TOTAL EMPLOYEE COUNT: '
+*
+TOTEMP   DS    CL12
+         DC    84C' '
+*
+OLINE2   DC    C'0'
+         DC    19C' '
+         DC    C'TOTAL DEDUCTIONS: '
+TOTDEDCT DS    CL12
+         DC    84C' '
+*
+OLINE3   DC    C'0'
+         DC    22C' '
+         DC    C'TOTAL BONUSES: '
+TOTBONUS DS    CL12
+         DC    84C' '
+*
+OLINE4   DC    C'0'
+         DC    20C' '
+         DC    C'TOTAL GROSS PAY: '
+TOTGRPAY DS    CL12
+         DC    84C' '
+*
+OLINE5   DC    C'0'
+         DC    19C' '
+         DC    C'TOTAL WITHOLDING: '
+TOTWITH  DS    CL12
+         DC    84C' '
+*
+OLINE6   DC    C'0'
+         DC    22C' '
+         DC    C'TOTAL NET PAY: '
+TOTNPAY  DS    CL12
+         DC    84C' '
+*
+OLINE7   DC    C'0'
+         DC    18C' '
+         DC    C'AVERAGE GROSS PAY: '
+TOAVGPA  DS    CL12
+         DC    84C' '
+*
+OLINE8   DC    C'0'
+         DC    20C' '
+         DC    C'AVERAGE NET PAY: '
+TOAVGNET DS    CL12
+         DC    84C' '
+*
+         END   PAYROLL1
+*** ASSIST 4.0/A2-05/15/82  470/V7A/0:OS/VS2  INS=SDFP7/X=BGHO, CHECK/TRC/=1180, OPTS=CDKMPR FROM PENN ST*NIU COMPSCI*LT
+ 
+                                                                                                               PAGE    1
+  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+                                      1 ******************************************************************
+                                      2 *                                                                *
+                                      3 *  CSCI 360               ASSIGNMENT 6              SUMMER 2020  *
+                                      4 *                                                                *
+                                      5 *  PROGRAMMER NAME: BRAYAN CHACHA GONZALEZ                       *
+                                      6 *                                                                *
+                                      7 *             DATE: 7/17/20                                      *
+                                      8 *                                                                *
+                                      9 *     PROGRAM NAME: PAYROLL1                                     *
+                                     10 *                                                                *
+                                     11 *         FUNCTION: MULTIPLICATION AND DIVISION                  *
+                                     12 *                                                                *
+                                     13 *            NOTES: COULN'T GET THE TOTAL OF THE GROSS COLLUMN,  *
+                                     14 *                   NET, AND TOTAL AND AVERAGES                  *
+                                     15 *                                                                *
+                                     16 *   REGISTER USAGE:                                              *
+                                     17 *                   R2 HOURLY PAY                                *
+                                     18 *                   R3 AMOUNT OF HOURS WORKED                    *
+                                     19 *                   R4 DEDUCTION AMOUNT                          *
+                                     20 *                   R5 BONUS AMOUNT                              *
+                                     21 *                   R6 TOTAL AMOUNT OF BONUS                     *
+                                     22 *                   R7 NET AMOUNT                                *
+                                     23 *                  R11 GROSS AMOUNT                              *
+                                     24 *                  R12 INPUT DATA                                *
+                                     25 *                  R13 TOTAL AMOUNT OF DEDUCTION                 *
+                                     26 ******************************************************************
+                                     27 *        COL. 10                                                 *
+                                     28 *        |     COL. 16          COMMENTS                         *
+                                     29 *        |     |                |                                *
+                                     30 *        v     v                v                                *
+                                     31 ******************************************************************
+000000                               32 PAYROLL1 CSECT
+000000                               33          USING PAYROLL1,15
+                                     34 *                               SETTING REGS TO 0, CLEARING
+000000 4120 0000            00000    35          LA    2,0
+000004 4130 0000            00000    36          LA    3,0
+000008 4140 0000            00000    37          LA    4,0
+00000C 4150 0000            00000    38          LA    5,0
+000010 4160 0000            00000    39          LA    6,0
+000014 4170 0000            00000    40          LA    7,0
+000018 4180 0000            00000    41          LA    8,0
+00001C 4190 0000            00000    42          LA    9,0
+000020 41A0 0000            00000    43          LA    10,0
+000024 41B0 0000            00000    44          LA    11,0
+000028 41C0 0000            00000    45          LA    12,0
+00002C 41D0 0000            00000    46          LA    13,0
+                                     47 ******************************************************************
+000030 E000 F108 0050 00108          48          XREAD BUFFER,80            READING 80 BYTES FROM INPUT
+000036 53C0 F108            00108    49          XDECI 12,BUFFER            INPUT DATA TO REG12
+                                     50 *
+00003A E000 F108 0050 00108          51          XREAD BUFFER,80            READING FIRST INPUT NAMES
+                                     52 *
+                                                                                                               PAGE    2
+  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+000040 4740 F0BC            000BC    53 RLOOP    BC    B'0100',ELOOP        BRANCH TO ELOOP IF EOF
+                                     54 *
+000044 D218 F159 F108 00159 00108    55          MVC   EMPNAME(25),BUFFER   COPYING DATA TO TABLE EMPNAME
+00004A D204 F173 F121 00173 00121    56          MVC   EMPID(5),BUFFER+25   COPYING DATA TO GET EMPID
+                                     57 *
+000050 5320 F127            00127    58          XDECI 2,BUFFER+31          SETTING HR PAY TO REG2
+000054 5220 F17A            0017A    59          XDECO 2,HRPAY              PRINT HR PAY TO PRTLN
+                                     60 *
+000058 5330 F12A            0012A    61          XDECI 3,BUFFER+34          SETTING HOURS WORKED TO REG3
+00005C 5230 F188            00188    62          XDECO 3,NHOUR              PRINT # HR'S WORKED TO PRTLN
+                                     63 *
+000060 5340 F12D            0012D    64          XDECI 4,BUFFER+37          SETTING DEDUC TO REG4
+000064 1AD4                          65          AR    13,4                 ADDING DEDUC AND PLACING IN RE13
+                                     66 *
+000066 5240 F196            00196    67          XDECO 4,ODEDUCT            PRINT DEDUC TO PRTLN
+00006A 5350 F130            00130    68          XDECI 5,BUFFER+40          SETTING BONUS TO REG5
+00006E 1A65                          69          AR    6,5                  ADDING BONUS AND PLACING IN RE6
+000070 5250 F1A4            001A4    70          XDECO 5,OBONUS             PRINT BONUS TO PRTLN
+                                     71 *
+                                     72 ******************************************************************
+                                     73 *                      CALCULATIONS                              *
+                                     74 ******************************************************************
+                                     75 *
+000074 1BAA                          76          SR    10,10                CLEARING REG10
+000076 1BBB                          77          SR    11,11                CLEARING REG11
+000078 18B2                          78          LR    11,2                 LOAD REG2 INTO REG11
+00007A 1CA3                          79          MR    10,3                 REG11 x REG3
+00007C 1BB4                          80          SR    11,4                 SUB REG4 FROM REG11
+00007E 1AB5                          81          AR    11,5                 ADD REG5 TO REG11
+                                     82 *
+000080 52B0 F1B2            001B2    83          XDECO 11,OGROSS            GROSS PAY TO REG11
+                                     84 *
+000084 4120 0000            00000    85          LA    2,0                  WRONG TRYING TO GET TOTAL OF
+000088 1A2B                          86          AR    2,11                 GROSS
+                                     87 *
+00008A 187B                          88          LR    7,11                 CALCULATING NET PAY
+00008C 1CAC                          89          MR    10,12
+00008E 5CA0 F100            00100    90          M     10,=F'1'             MULTIPLYING WITHOLD
+000092 5DA0 F104            00104    91          D     10,=F'100'
+000096 188B                          92          LR    8,11
+000098 1B7B                          93          SR    7,11
+00009A 5270 F1CE            001CE    94          XDECO 7,ONET               PRINT NETPAY TO PRTLN
+                                     95 *
+00009E 1B7B                          96          SR    7,11
+0000A0 5270 F1C0            001C0    97          XDECO 7,OWITH              PRINT WITHOLD TO PRNT
+                                     98 *
+0000A4 5A90 F100            00100    99          A     9,=F'1'              EMPLOYEE COUNTER
+0000A8 5290 F203            00203   100          XDECO 9,TOTEMP              PRINT NUM OF EMPLOYEES
+                                    101 *
+0000AC E020 F158 0085 00158         102          XPRNT PRTLINE,133          PRNT 133 FROM PTRLINE
+0000B2 E000 F108 0050 00108         103          XREAD BUFFER,80            BUFFER 80 BYTES
+                                    104 *
+0000B8 47F0 F040            00040   105          BC    B'1111',RLOOP        BRANCH BACK TO RLOOP
+0000BC                              106 ELOOP    DS    0H
+                                    107 *
+0000BC 52D0 F289            00289   108          XDECO 13,TOTDEDCT          SENDING TO PTRLN, BOTTOM
+0000C0 5260 F30F            0030F   109          XDECO 6,TOTBONUS
+                                                                                                               PAGE    3
+  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+0000C4 5220 F395            00395   110          XDECO 2,TOTGRPAY
+0000C8 E020 F1DD 0085 001DD         111          XPRNT OLINE,133            PRINT TOTAL EMPLOYEES
+0000CE E020 F263 0085 00263         112          XPRNT OLINE2,133           PRINT TOTAL DEDUCTIONS
+0000D4 E020 F2E9 0085 002E9         113          XPRNT OLINE3,133           PRINT TOTAL BONUSES
+0000DA E020 F36F 0085 0036F         114          XPRNT OLINE4,133           PRINT TOTAL GROSS PAY
+0000E0 E020 F3F5 0085 003F5         115          XPRNT OLINE5,133           PRINT TOTAL WITHOLDING
+0000E6 E020 F47B 0085 0047B         116          XPRNT OLINE6,133           PRINT TOTAL NETPAY
+0000EC E020 F501 0085 00501         117          XPRNT OLINE7,133           PRINT TOTAL GROSS P AVERAGE
+0000F2 E020 F587 0085 00587         118          XPRNT OLINE8,133           PRINT TOTAL NET PAY AVERAGE
+                                    119 *
+0000F8 07FE                         120          BCR   B'1111',14           GOING BACK TO THE OSYSTEM
+                                    121          LTORG                      ORGANIZER LITERAL
+000100 00000001                     122                =F'1'
+000104 00000064                     123                =F'100'
+                                    124 *
+                                    125 ******************************************************************
+                                    126 *
+000108                              127 BUFFER   DS    CL80                DEFINING DATA INPUT
+                                    128 *
+000158 F0                           129 PRTLINE  DC    C'0'
+                                    130 *
+000159                              131 EMPNAME  DS     CL25               STORAGE FOR EMP NAME
+000172 40                           132          DC    C' '
+                                    133 *
+000173                              134 EMPID    DS    CL5                 STORAGE FOR EMP ID
+000178 4040                         135          DC    2C' '
+                                    136 *
+00017A                              137 HRPAY    DS    CL12                STORAGE FOR HOURLY PAY
+000186 4040                         138          DC    2C' '
+                                    139 *
+000188                              140 NHOUR    DS    CL12                STORAGE FOR # OF HOURS
+000194 4040                         141          DC    2C' '
+                                    142 *
+000196                              143 ODEDUCT  DS    CL12                STORAGE FOR DEDUCTIONS
+0001A2 4040                         144          DC    2C' '
+                                    145 *
+0001A4                              146 OBONUS   DS    CL12                STORAGE FOR BONUS
+0001B0 4040                         147          DC    2C' '
+                                    148 *
+0001B2                              149 OGROSS   DS    CL12                STORAGE FOR GROSS PAY
+0001BE 4040                         150          DC    2C' '
+                                    151 *
+0001C0                              152 OWITH    DS    CL12                STORAGE FOR WITHOLD
+0001CC 4040                         153          DC    2C' '
+                                    154 *
+0001CE                              155 ONET     DS    CL12                STORAGE FOR NETPAY
+0001DA 404040                       156          DC    3C' '
+                                    157 *
+                                    158 ******************************************************************
+                                    159 *                      BOTTOM HEADER                             *
+                                    160 ******************************************************************
+0001DD F0                           161 OLINE    DC    C'0'
+0001DE 4040404040404040             162          DC    15C' '
+0001ED E3D6E3C1D340C5D4             163          DC    C'TOTAL EMPLOYEE COUNT: '
+                                    164 *
+000203                              165 TOTEMP   DS    CL12
+00020F 4040404040404040             166          DC    84C' '
+                                                                                                               PAGE    4
+  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+                                    167 *
+000263 F0                           168 OLINE2   DC    C'0'
+000264 4040404040404040             169          DC    19C' '
+000277 E3D6E3C1D340C4C5             170          DC    C'TOTAL DEDUCTIONS: '
+000289                              171 TOTDEDCT DS    CL12
+000295 4040404040404040             172          DC    84C' '
+                                    173 *
+0002E9 F0                           174 OLINE3   DC    C'0'
+0002EA 4040404040404040             175          DC    22C' '
+000300 E3D6E3C1D340C2D6             176          DC    C'TOTAL BONUSES: '
+00030F                              177 TOTBONUS DS    CL12
+00031B 4040404040404040             178          DC    84C' '
+                                    179 *
+00036F F0                           180 OLINE4   DC    C'0'
+000370 4040404040404040             181          DC    20C' '
+000384 E3D6E3C1D340C7D9             182          DC    C'TOTAL GROSS PAY: '
+000395                              183 TOTGRPAY DS    CL12
+0003A1 4040404040404040             184          DC    84C' '
+                                    185 *
+0003F5 F0                           186 OLINE5   DC    C'0'
+0003F6 4040404040404040             187          DC    19C' '
+000409 E3D6E3C1D340E6C9             188          DC    C'TOTAL WITHOLDING: '
+00041B                              189 TOTWITH  DS    CL12
+000427 4040404040404040             190          DC    84C' '
+                                    191 *
+00047B F0                           192 OLINE6   DC    C'0'
+00047C 4040404040404040             193          DC    22C' '
+000492 E3D6E3C1D340D5C5             194          DC    C'TOTAL NET PAY: '
+0004A1                              195 TOTNPAY  DS    CL12
+0004AD 4040404040404040             196          DC    84C' '
+                                    197 *
+000501 F0                           198 OLINE7   DC    C'0'
+000502 4040404040404040             199          DC    18C' '
+000514 C1E5C5D9C1C7C540             200          DC    C'AVERAGE GROSS PAY: '
+000527                              201 TOAVGPA  DS    CL12
+000533 4040404040404040             202          DC    84C' '
+                                    203 *
+000587 F0                           204 OLINE8   DC    C'0'
+000588 4040404040404040             205          DC    20C' '
+00059C C1E5C5D9C1C7C540             206          DC    C'AVERAGE NET PAY: '
+0005AD                              207 TOAVGNET DS    CL12
+0005B9 4040404040404040             208          DC    84C' '
+                                    209 *
+                                    210          END   PAYROLL1
+***  NO   STATEMENTS FLAGGED -  NO   WARNINGS,  NO   ERRORS
+*** DYNAMIC CORE AREA USED:  LOW:    8496 HIGH:     968 LEAVING:  484104 FREE BYTES. AVERAGE:       44 BYTES/STMT ***
+*** ASSEMBLY TIME =    0.000 SECS,   211000 STATEMENTS/SEC ***
+*** PROGRAM EXECUTION BEGINNING - ANY OUTPUT BEFORE EXECUTION TIME MESSAGE IS PRODUCED BY USER PROGRAM ***
+WOLFGANG AMADEUS MOZART   12345            15            80            25           500          1675          1073          1374
+RICHARD STRAUSS           23456            19            80             0            10          1530           980          1255
+AMY BEACH                 22132            10            80            31           200           969           621           795
+DAME ETHEL SMYTHE         65465            22            80            15           900          2645          1693          2169
+PETER ILYICH TCHAIKOVSKY  44560            23            28            34            70           680           436           558
+ANTON BRUCKNER            99870            22            80            21             0          1739          1113          1426
+LUDWIG VAN BEETHOVEN      13345            15            80            25           500          1675          1073          1374
+JOHANNES BRAHMS           24456            19            80             0            10          1530           980          1255
+BELA BARTOK               22532            10            80            31           200           969           621           795
+MAX REGER                 11465            22            80            15           900          2645          1693          2169
+SAMUEL BARBER             13360            23            28            34            70           680           436           558
+GIUSEPPE VERDI            99873            22            80            21             0          1739          1113          1426
+JOHANN SEBASTIAN BACH     12342            15            80            25           500          1675          1073          1374
+JOSEPH HAYDN              23452            19            80             0            10          1530           980          1255
+GEORG FRIEDRICH HANDEL    22131            10            80            31           200           969           621           795
+EDWARD ELGAR              65411            22            80            15           900          2645          1693          2169
+NIKOLAI RIMSKY-KORSAKOV   44378            23            28            34            70           680           436           558
+CLAUDE DEBUSSY            99855            22            80            21             0          1739          1113          1426
+ANTONIN DVORAK            13346            15            80            25           500          1675          1073          1374
+THOMAS TALLIS             24457            19            80             0            10          1530           980          1255
+RALPH VAUGHAN WILLIAMS    22538            10            80            31           200           969           621           795
+RICHARD WAGNER            11477            22            80            15           900          2645          1693          2169
+FREDERIC CHOPIN           17777            23            28            34            70           680           436           558
+JOAN TOWER                99211            22            80            21             0          1739          1113          1426
+               TOTAL EMPLOYEE COUNT:           24
+                   TOTAL DEDUCTIONS:          504
+                      TOTAL BONUSES:         6720
+                    TOTAL GROSS PAY:         1739
+                   TOTAL WITHOLDING: 555555555555
+                      TOTAL NET PAY: 555555555555
+                  AVERAGE GROSS PAY: 555555555555
+                    AVERAGE NET PAY: 555555555555
+*** EXECUTION TIME =    0.000 SECS.       892 INSTRUCTIONS EXECUTED -   892000 INSTRUCTIONS/SEC ***
+*** AM004 - NORMAL USER TERMINATION BY RETURN ***

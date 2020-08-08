@@ -1,0 +1,134 @@
+//KC03C9C JOB ,'BRAYAN CHACHA G',MSGCLASS=H
+//JSTEP01  EXEC PGM=ASSIST
+//STEPLIB  DD DSN=KC00NIU.ASSIST.LOADLIB,DISP=SHR
+//SYSPRINT DD SYSOUT=*
+//SYSIN    DD *
+******************************************************************
+*                                                                *
+*  CSCI 360               ASSIGNMENT 6              SUMMER 2020  *
+*                                                                *
+*  PROGRAMMER NAME: BRAYAN CHACHA GONZALEZ                       *
+*                                                                *
+*             DATE: 7/17/20                                      *
+*                                                                *
+*     PROGRAM NAME: PAYROLL1                                     *
+*                                                                *
+*         FUNCTION: MULTIPLICATION AND DIVISION                  *
+*                                                                *
+*           NOTES:                                               *
+*                                                                *
+******************************************************************
+*        COL. 10                                                 *
+*        |     COL. 16           COMMENTS                        *
+*        |     |                 |                               *
+*        v     v                 v                               *
+******************************************************************
+PAYROLL1 CSECT
+         USING PAYROLL1,15
+         SR    2,2             CLEARING REG 2 FOR EMP NAME
+         SR    3,3             CLEARING REG 3 FOR EMP ID
+         SR    4,4             CLEARING REG 4 FOR HOURLY PAY
+         SR    5,5             CLEARING REG 5 FOR NUM OF HOURS W
+         SR    6,6             CLEARING REG 6 FOR DEDUC AMOUNT
+         SR    7,7             CLEARING REG 7 FOR BONUS
+         SR    8,8             CLEARING REG 8 FOR COUNT OF EMP
+         SR    9,9             CLEARING RED 9 FOR GROSS PAY
+         SR    10,10
+         LTORG
+*
+*                              CREATING THE LOOP TO STARTING
+*                              READING THE RECORDS
+*
+RLOOP    XREAD BUFFER,80          READING DATA FROM RECORDS
+         BC    B'0100',ELOOP      BRANCH TO ELOOP IF EOF
+         LA    13,BUFFER          REG13 POINTER TO BUFFER
+         A     8,=F'1'            COUNTER FOR NUM OF EMPLOYEES
+         MVC   ENAME(20),BUFFER   COPYING DATA TO TABLE EMPNAME
+         MVC   EMPID(5),BUFFER+25 READING FROM BUFFER EMPID
+         MVC   HOURP(4),BUFFER+31 READING HOURLY RATE
+         MVC   NHOUR(4),BUFFER+33 READING HOURS WORKED
+         MVC   DEAMT(4),BUFFER+39 READING DEDUCTION AMT
+*
+*                                 ADDING VALUES TO REGISTERS
+*         XDECI 4,BUFFER+31        ADDING HOUR LATE TO REG4
+*         XDECI 5,0(1)             NUM OF HRS ADDED TO REG5
+*         XDECI 6,0(1)             DEDUC AMNT ADDED TO REG6
+*         XDECI 7,0(1)             BONUS ADDED TO REG7
+*
+*                                 ARITHMETIC GROSS PAY
+GROPAY   MR    4,4                MUL NUM OF HOURS*HOUL PAY
+         SR    5,6                SUB HR RATE(REG4)*NUM HRS(REG5)
+         AR    5,7                ADD DECTUION AND BONUS
+         XDECO 9,BUFFER+43        STORING GROSS PAY USE TO BE 35
+         XPRNT SPACES,80          SPACESE, 80 USED TO BE 80
+*
+*NETPAY   M     4,=F'10'           NETPAY MUL GROSS * WITHOLD
+*        DR    4,=F'100'          DIV NET PY WITH 100
+*        SR    5,4                SUB GROSS - REG4
+*                                 GETTING ERROR CODES WHEN
+*                                 DOING NETPAY
+*
+*TOTA     AR    5,4                ADDING REGISTER TO GET TOTAL
+*         XDECO 10,TOTAL
+         B     RLOOP              BRANCHING BACK TO THE RLOOP
+ELOOP    DS    0H
+*
+******************************************************************
+*
+*
+         LTORG
+PRLINE   DC    C'0'            PRINT ON NEW PAGE
+SPACES   DC    C'0'
+BUFFER   DS    CL84            DEFINE TO READ INPUT
+         DC    C' '
+ENAME    DS    CL20            DEFINING EMPLOYEE NAME
+         DC    C' '
+EMPID    DS    CL5             DEFINING EMPLOYEE ID
+         DC    C' '
+HOURP    DS    FL4             DEFINING HOURLY PAY RATE
+         DC    C' '
+NHOUR    DS    FL4             DEFINING NUM OF HOURS WRKED
+         DC    C' '
+DEAMT    DS    FL4             DEFINING DEDUCTION AMOUNT
+         DC    C' '
+BONUS    DS    FL4             DEFINING BONUS
+         DC    C' '
+GRPAY    DS    FL4             DEFINING GROSS PAY
+         DC    C' '
+NEPAY    DS    FL4             DEFINING NET PAY
+         DC    C' '
+TOTAL    DS    FL4             DEFINING TOTAL GROSS + NET
+         DC    C' '
+*
+TOTALE   DC    C'0TOTAL EMPLOYEE COUNT:     '
+TOTALH   DS    CL12
+*
+DECUCE   DC    C'0TOTAL DEDUCTIONS:     '
+DECUC    DS    CL12
+*
+BONUSE   DC    C'0BONUSES:     '
+BONUSH   DS    CL12
+*
+TOGROE   DC    C'0TOTAL GROSS PAY:     '
+TOGRO    DS    CL12
+*
+TWHOLE   DC    C'0TOTAL WITHHOLDING:     '
+TWHOL    DS    CL12
+*
+TNPAYE   DC    C'0TOTAL NET PAY:     '
+TNPAY    DS    CL12
+*
+AVGPAE   DC    C'0AVERAGE GROSS PAY:     '
+AVGPA    DS    CL12
+*
+AVGNTE   DC    C'0AVERAGE NET PAY:     '
+AVGNT    DS    CL12
+         END   PAYROLL1
+/*
+//*
+//FT05F001 DD DSN=KC02322.CSCI360.DATASU20(DATA5),DISP=SHR
+//*
+//FT06F001 DD SYSOUT=*
+//*
+//SYSPRINT DD SYSOUT=*
+//

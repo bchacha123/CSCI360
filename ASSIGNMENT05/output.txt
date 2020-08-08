@@ -1,0 +1,349 @@
+                   J E S 2  J O B  L O G  --  S Y S T E M  2 9 6 4  --  N O D E  S V S C J E S 2
+ 
+08.50.44 JOB07788 ---- FRIDAY,    17 JUL 2020 ----
+08.50.44 JOB07788  IRR010I  USERID KC03C9C  IS ASSIGNED TO THIS JOB.
+08.50.44 JOB07788  ICH70001I KC03C9C  LAST ACCESS AT 08:49:25 ON FRIDAY, JULY 17, 2020
+08.50.44 JOB07788  $HASP373 KC03C9C  STARTED - INIT 1    - CLASS A        - SYS 2964
+08.50.44 JOB07788  $HASP395 KC03C9C  ENDED - RC=0000
+------ JES2 JOB STATISTICS ------
+  17 JUL 2020 JOB EXECUTION DATE
+          118 CARDS READ
+          248 SYSOUT PRINT RECORDS
+            0 SYSOUT PUNCH RECORDS
+           21 SYSOUT SPOOL KBYTES
+         0.00 MINUTES EXECUTION TIME
+        1 //KC03C9C JOB ,'BRAYAN CHACHA G',MSGCLASS=H                             JOB07788
+        2 //JSTEP01  EXEC PGM=ASSIST
+        3 //STEPLIB  DD DSN=KC00NIU.ASSIST.LOADLIB,DISP=SHR
+        4 //SYSPRINT DD SYSOUT=*
+        5 //SYSIN    DD *
+          //*
+        6 //FT05F001 DD DSN=KC02322.CSCI360.DATASU20(DATA5),DISP=SHR
+          //*
+        7 //FT06F001 DD SYSOUT=*
+          //*
+        8 //SYSPRINT DD SYSOUT=*
+        9 //
+ICH70001I KC03C9C  LAST ACCESS AT 08:49:25 ON FRIDAY, JULY 17, 2020
+IEFA111I KC03C9C IS USING THE FOLLOWING JOB RELATED SETTINGS:
+         SWA=ABOVE,TIOT SIZE=32K,DSENQSHR=DISALLOW,GDGBIAS=JOB
+IEF236I ALLOC. FOR KC03C9C JSTEP01
+IGD103I SMS ALLOCATED TO DDNAME STEPLIB
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I JES2 ALLOCATED TO SYSIN
+IGD103I SMS ALLOCATED TO DDNAME FT05F001
+IEF237I JES2 ALLOCATED TO FT06F001
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF142I KC03C9C JSTEP01 - STEP WAS EXECUTED - COND CODE 0000
+IGD104I KC00NIU.ASSIST.LOADLIB                       RETAINED,  DDNAME=STEPLIB
+IEF285I   KC03C9C.KC03C9C.JOB07788.D0000102.?          SYSOUT
+IEF285I   KC03C9C.KC03C9C.JOB07788.D0000101.?          SYSIN
+IGD104I KC02322.CSCI360.DATASU20                     RETAINED,  DDNAME=FT05F001
+IEF285I   KC03C9C.KC03C9C.JOB07788.D0000103.?          SYSOUT
+IEF285I   KC03C9C.KC03C9C.JOB07788.D0000104.?          SYSOUT
+IEF373I STEP/JSTEP01 /START 2020199.0850
+IEF032I STEP/JSTEP01 /STOP  2020199.0850
+        CPU:     0 HR  00 MIN  00.00 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+        VIRT:   584K  SYS:   248K  EXT:        0K  SYS:    12072K
+        ATB- REAL:                  1056K  SLOTS:                     0K
+             VIRT- ALLOC:      13M SHRD:       0M
+IEF375I  JOB/KC03C9C /START 2020199.0850
+IEF033I  JOB/KC03C9C /STOP  2020199.0850
+        CPU:     0 HR  00 MIN  00.00 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+******************************************************************
+*                                                                *
+*  CSCI 360               ASSIGNMENT 6              SUMMER 2020  *
+*                                                                *
+*  PROGRAMMER NAME: BRAYAN CHACHA GONZALEZ                       *
+*                                                                *
+*             DATE: 7/17/20                                      *
+*                                                                *
+*     PROGRAM NAME: PAYROLL1                                     *
+*                                                                *
+*         FUNCTION: MULTIPLICATION AND DIVISION                  *
+*                                                                *
+*           NOTES:                                               *
+*                                                                *
+******************************************************************
+*        COL. 10                                                 *
+*        |     COL. 16           COMMENTS                        *
+*        |     |                 |                               *
+*        v     v                 v                               *
+******************************************************************
+PAYROLL1 CSECT
+         USING PAYROLL1,15
+         SR    2,2             CLEARING REG 2 FOR EMP NAME
+         SR    3,3             CLEARING REG 3 FOR EMP ID
+         SR    4,4             CLEARING REG 4 FOR HOURLY PAY
+         SR    5,5             CLEARING REG 5 FOR NUM OF HOURS W
+         SR    6,6             CLEARING REG 6 FOR DEDUC AMOUNT
+         SR    7,7             CLEARING REG 7 FOR BONUS
+         SR    8,8             CLEARING REG 8 FOR COUNT OF EMP
+         SR    9,9             CLEARING RED 9 FOR GROSS PAY
+         LTORG
+*
+*                              CREATING THE LOOP TO STARTING
+*                              READING THE RECORDS
+*
+RLOOP    XREAD BUFFER,80          READING DATA FROM RECORDS
+         BC    B'0100',ELOOP      BRANCH TO ELOOP IF EOF
+         LA    13,BUFFER          REG13 POINTER TO BUFFER
+         A     8,=F'1'            COUNTER FOR NUM OF EMPLOYEES
+         MVC   ENAME(20),BUFFER   COPYING DATA TO TABLE EMPNAME
+         MVC   EMPID(5),BUFFER+25 READING FROM BUFFER EMPID
+         MVC   HOURP(4),BUFFER+31 READING HOURLY RATE
+         MVC   NHOUR(4),BUFFER+33 READING HOURS WORKED
+         MVC   DEAMT(4),BUFFER+39 READING DEDUCTION AMT
+*
+*                                 ARITHMETIC GROSS PAY
+GROPAY   MR    4,4               MUL NUM OF HOURS*HOUL PAY
+         SR    5,6                SUB HR RATE(REG4)*NUM HRS(REG5)
+         AR    5,7                ADD DECTUION AND BONUS
+         XDECO 9,BUFFER+40        STORING GROSS PAY USE TO BE 35
+         XPRNT SPACES,80
+         B     RLOOP              BRANCHING BACK TO THE RLOOP
+*
+******************************************************************
+*
+*
+         LTORG
+PRLINE   DC    C'0'            PRINT ON NEW PAGE
+ELOOP    DS    0H
+SPACES   DC    C'0'
+BUFFER   DS    CL84            DEFINE TO READ INPUT
+         DC    C' '
+ENAME    DS    CL20            DEFINING EMPLOYEE NAME
+         DC    C' '
+EMPID    DS    CL5             DEFINING EMPLOYEE ID
+         DC    C' '
+HOURP    DS    FL4             DEFINING HOURLY PAY RATE
+         DC    C' '
+NHOUR    DS    FL4             DEFINING NUM OF HOURS WRKED
+         DC    C' '
+DEAMT    DS    FL4             DEFINING DEDUCTION AMOUNT
+         DC    C' '
+BONUS    DS    FL4             DEFINING BONUS
+         DC    C' '
+GRPAY    DS    FL4             DEFINING GROSS PAY
+         DC    C' '
+NEPAY    DS    FL4             DEFINING NET PAY
+         DC    C' '
+TOTAL    DS    FL4             DEFINING TOTAL GROSS + NET
+         DC    C' '
+*
+TOTALE   DC    C'        TOTAL EMPLOYEE COUNT:     '
+TOTALH   DS    CL12
+*
+DECUCE   DC    C'            TOTAL DEDUCTIONS:     '
+DECUC    DS    CL12
+*
+BONUSE   DC    C'                     BONUSES:     '
+BONUSH   DS    CL12
+*
+TOGROE   DS    C'             TOTAL GROSS PAY:     '
+TOGRO    DS    CL12
+*
+TWHOLE   DS    C'           TOTAL WITHHOLDING:     '
+TWHOL    DS    CL12
+*
+TNPAYE   DS    C'               TOTAL NET PAY:     '
+TNPAY    DS    CL12
+*
+AVGPAE   DS    C'           AVERAGE GROSS PAY:     '
+AVGPA    DS    CL12
+*
+AVGNTE   DS    C'             AVERAGE NET PAY:     '
+AVGNT    DS    CL12
+         END   PAYROLL1
+*** ASSIST 4.0/A2-05/15/82  470/V7A/0:OS/VS2  INS=SDFP7/X=BGHO, CHECK/TRC/=1180, OPTS=CDKMPR FROM PENN ST*NIU COMPSCI*LT
+ 
+                                                                                                               PAGE    1
+  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+                                      1 ******************************************************************
+                                      2 *                                                                *
+                                      3 *  CSCI 360               ASSIGNMENT 6              SUMMER 2020  *
+                                      4 *                                                                *
+                                      5 *  PROGRAMMER NAME: BRAYAN CHACHA GONZALEZ                       *
+                                      6 *                                                                *
+                                      7 *             DATE: 7/17/20                                      *
+                                      8 *                                                                *
+                                      9 *     PROGRAM NAME: PAYROLL1                                     *
+                                     10 *                                                                *
+                                     11 *         FUNCTION: MULTIPLICATION AND DIVISION                  *
+                                     12 *                                                                *
+                                     13 *           NOTES:                                               *
+                                     14 *                                                                *
+                                     15 ******************************************************************
+                                     16 *        COL. 10                                                 *
+                                     17 *        |     COL. 16           COMMENTS                        *
+                                     18 *        |     |                 |                               *
+                                     19 *        v     v                 v                               *
+                                     20 ******************************************************************
+000000                               21 PAYROLL1 CSECT
+000000                               22          USING PAYROLL1,15
+000000 1B22                          23          SR    2,2             CLEARING REG 2 FOR EMP NAME
+000002 1B33                          24          SR    3,3             CLEARING REG 3 FOR EMP ID
+000004 1B44                          25          SR    4,4             CLEARING REG 4 FOR HOURLY PAY
+000006 1B55                          26          SR    5,5             CLEARING REG 5 FOR NUM OF HOURS W
+000008 1B66                          27          SR    6,6             CLEARING REG 6 FOR DEDUC AMOUNT
+00000A 1B77                          28          SR    7,7             CLEARING REG 7 FOR BONUS
+00000C 1B88                          29          SR    8,8             CLEARING REG 8 FOR COUNT OF EMP
+00000E 1B99                          30          SR    9,9             CLEARING RED 9 FOR GROSS PAY
+                                     31          LTORG
+                                     32 *
+                                     33 *                              CREATING THE LOOP TO STARTING
+                                     34 *                              READING THE RECORDS
+                                     35 *
+000010 E000 F05F 0050 0005F          36 RLOOP    XREAD BUFFER,80          READING DATA FROM RECORDS
+000016 4740 F05E            0005E    37          BC    B'0100',ELOOP      BRANCH TO ELOOP IF EOF
+00001A 41D0 F05F            0005F    38          LA    13,BUFFER          REG13 POINTER TO BUFFER
+00001E 5A80 F058            00058    39          A     8,=F'1'            COUNTER FOR NUM OF EMPLOYEES
+000022 D213 F0B4 F05F 000B4 0005F    40          MVC   ENAME(20),BUFFER   COPYING DATA TO TABLE EMPNAME
+000028 D204 F0C9 F078 000C9 00078    41          MVC   EMPID(5),BUFFER+25 READING FROM BUFFER EMPID
+00002E D203 F0CF F07E 000CF 0007E    42          MVC   HOURP(4),BUFFER+31 READING HOURLY RATE
+000034 D203 F0D4 F080 000D4 00080    43          MVC   NHOUR(4),BUFFER+33 READING HOURS WORKED
+00003A D203 F0D9 F086 000D9 00086    44          MVC   DEAMT(4),BUFFER+39 READING DEDUCTION AMT
+                                     45 *
+                                     46 *                                 ARITHMETIC GROSS PAY
+000040 1C44                          47 GROPAY   MR    4,4               MUL NUM OF HOURS*HOUL PAY
+000042 1B56                          48          SR    5,6                SUB HR RATE(REG4)*NUM HRS(REG5)
+000044 1A57                          49          AR    5,7                ADD DECTUION AND BONUS
+000046 5290 F087            00087    50          XDECO 9,BUFFER+40        STORING GROSS PAY USE TO BE 35
+00004A E020 F05E 0050 0005E          51          XPRNT SPACES,80
+000050 47F0 F010            00010    52          B     RLOOP              BRANCHING BACK TO THE RLOOP
+                                                                                                               PAGE    2
+  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+                                     53 *
+                                     54 ******************************************************************
+                                     55 *
+                                     56 *
+                                     57          LTORG
+000058 00000001                      58                =F'1'
+00005C F0                            59 PRLINE   DC    C'0'            PRINT ON NEW PAGE
+00005E                               60 ELOOP    DS    0H
+00005E F0                            61 SPACES   DC    C'0'
+00005F                               62 BUFFER   DS    CL84            DEFINE TO READ INPUT
+0000B3 40                            63          DC    C' '
+0000B4                               64 ENAME    DS    CL20            DEFINING EMPLOYEE NAME
+0000C8 40                            65          DC    C' '
+0000C9                               66 EMPID    DS    CL5             DEFINING EMPLOYEE ID
+0000CE 40                            67          DC    C' '
+0000CF                               68 HOURP    DS    FL4             DEFINING HOURLY PAY RATE
+0000D3 40                            69          DC    C' '
+0000D4                               70 NHOUR    DS    FL4             DEFINING NUM OF HOURS WRKED
+0000D8 40                            71          DC    C' '
+0000D9                               72 DEAMT    DS    FL4             DEFINING DEDUCTION AMOUNT
+0000DD 40                            73          DC    C' '
+0000DE                               74 BONUS    DS    FL4             DEFINING BONUS
+0000E2 40                            75          DC    C' '
+0000E3                               76 GRPAY    DS    FL4             DEFINING GROSS PAY
+0000E7 40                            77          DC    C' '
+0000E8                               78 NEPAY    DS    FL4             DEFINING NET PAY
+0000EC 40                            79          DC    C' '
+0000ED                               80 TOTAL    DS    FL4             DEFINING TOTAL GROSS + NET
+0000F1 40                            81          DC    C' '
+                                     82 *
+0000F2 4040404040404040              83 TOTALE   DC    C'        TOTAL EMPLOYEE COUNT:     '
+000114                               84 TOTALH   DS    CL12
+                                     85 *
+000120 4040404040404040              86 DECUCE   DC    C'            TOTAL DEDUCTIONS:     '
+000142                               87 DECUC    DS    CL12
+                                     88 *
+00014E 4040404040404040              89 BONUSE   DC    C'                     BONUSES:     '
+000170                               90 BONUSH   DS    CL12
+                                     91 *
+00017C                               92 TOGROE   DS    C'             TOTAL GROSS PAY:     '
+00019E                               93 TOGRO    DS    CL12
+                                     94 *
+0001AA                               95 TWHOLE   DS    C'           TOTAL WITHHOLDING:     '
+0001CC                               96 TWHOL    DS    CL12
+                                     97 *
+0001D8                               98 TNPAYE   DS    C'               TOTAL NET PAY:     '
+0001FA                               99 TNPAY    DS    CL12
+                                    100 *
+000206                              101 AVGPAE   DS    C'           AVERAGE GROSS PAY:     '
+000228                              102 AVGPA    DS    CL12
+                                    103 *
+000234                              104 AVGNTE   DS    C'             AVERAGE NET PAY:     '
+000256                              105 AVGNT    DS    CL12
+                                    106          END   PAYROLL1
+***  NO   STATEMENTS FLAGGED -  NO   WARNINGS,  NO   ERRORS
+*** DYNAMIC CORE AREA USED:  LOW:    4508 HIGH:    1012 LEAVING:  488048 FREE BYTES. AVERAGE:       51 BYTES/STMT ***
+*** ASSEMBLY TIME =    0.000 SECS,   107000 STATEMENTS/SEC ***
+*** PROGRAM EXECUTION BEGINNING - ANY OUTPUT BEFORE EXECUTION TIME MESSAGE IS PRODUCED BY USER PROGRAM ***
+18                                                 0
+WOLFGANG AMADEUS MOZART  12345 15 80 25            0
+RICHARD STRAUSS          23456 19 80 00            0
+AMY BEACH                22132 10 80 31            0
+DAME ETHEL SMYTHE        65465 22 80 15            0
+PETER ILYICH TCHAIKOVSKY 44560 23 28 34            0
+ANTON BRUCKNER           99870 22 80 21            0
+LUDWIG VAN BEETHOVEN     13345 15 80 25            0
+JOHANNES BRAHMS          24456 19 80 00            0
+BELA BARTOK              22532 10 80 31            0
+MAX REGER                11465 22 80 15            0
+SAMUEL BARBER            13360 23 28 34            0
+GIUSEPPE VERDI           99873 22 80 21            0
+JOHANN SEBASTIAN BACH    12342 15 80 25            0
+JOSEPH HAYDN             23452 19 80 00            0
+GEORG FRIEDRICH HANDEL   22131 10 80 31            0
+EDWARD ELGAR             65411 22 80 15            0
+NIKOLAI RIMSKY-KORSAKOV  44378 23 28 34            0
+CLAUDE DEBUSSY           99855 22 80 21            0
+ANTONIN DVORAK           13346 15 80 25            0
+THOMAS TALLIS            24457 19 80 00            0
+RALPH VAUGHAN WILLIAMS   22538 10 80 31            0
+RICHARD WAGNER           11477 22 80 15            0
+FREDERIC CHOPIN          17777 23 28 34            0
+JOAN TOWER               99211 22 80 21            0
+*** EXECUTION TIME =    0.000 SECS.       386 INSTRUCTIONS EXECUTED -   386000 INSTRUCTIONS/SEC ***
+ ASSIST COMPLETION DUMP
+PSW AT ABEND FFC50004 D0000064       COMPLETION CODE   SYSTEM = 0C4 PROTECTION
+** TRACE OF INSTRUCTIONS JUST BEFORE TERMINATION: PSW BITS SHOWN ARE THOSE BEFORE CORRESPONDING INSTRUCTION DECODED ***
+  IM LOCATION    INSTRUCTION :  IM = PSW BITS 32-39(ILC,CC,MASK) BEFORE INSTRUCTION EXECUTED AT PROGRAM LOCATION SHOWN
+  20  00003A     D203 F0D9 F086
+  E0  000040     1C44
+  60  000042     1B56
+  40  000044     1A57
+  40  000046     5290 F087
+  80  00004A     E020 F05E 0050
+  C0  000050     47F0 F010
+  80  000010     E000 F05F 0050
+  D0  000016     4740 F05E
+  90  00005E     F0D1 D6C1 D540  <-- LAST INSTRUCTION DONE - PROBABLE CAUSE OF TERMINATION
+ 
+** TRACE OF LAST 10 BRANCH INSTRUCTIONS EXECUTED: PSW BITS SHOWN ARE THOSE BEFORE CORRESPONDING INSTRUCTION DECODED ***
+  IM LOCATION    INSTRUCTION :  IM = PSW BITS 32-39(ILC,CC,MASK) BEFORE INSTRUCTION EXECUTED AT PROGRAM LOCATION SHOWN
+  00  000050     47F0 F010
+  80  000050     47F0 F010
+  80  000050     47F0 F010
+  80  000050     47F0 F010
+  80  000050     47F0 F010
+  80  000050     47F0 F010
+  80  000050     47F0 F010
+  80  000050     47F0 F010
+  80  000050     47F0 F010
+  90  000016     4740 F05E
+ REGS 0-7      F4F4F4F4    F4F4F4F4    00000000    00000000    00000000    00000000    00000000    00000000
+ REGS 8-15     00000019    00000000    F4F4F4F4    F4F4F4F4    F4F4F4F4    0000005F    FFFE7960    00000000
+ FLTR 0-6      F4F4F4F4F4F4F4F4        F4F4F4F4F4F4F4F4        F4F4F4F4F4F4F4F4        F4F4F4F4F4F4F4F4
+ USER STORAGE
+                             CORE ADDRESSES SPECIFIED-     000000 TO 0003B0
+000000   1B221B33 1B441B55 1B661B77 1B881B99    E000F05F 00504740 F05E41D0 F05F5A80   *..................0.... 0...0...*
+000020   F058D213 F0B4F05F D204F0C9 F078D203    F0CFF07E D203F0D4 F080D203 F0D9F086   *0.K.0.0.K.0I0.K.0.0.K.0M0.K.0R0.*
+000040   1C441B56 1A575290 F087E020 F05E0050    47F0F010 F5F5F5F5 00000001 F0F5F0D1   *........0...0....00.5555....050J*
+000060   D6C1D540 E3D6E6C5 D9404040 40404040    40404040 40404040 F9F9F2F1 F140F2F2   *OAN TOWER               99211 22*
+000080   40F8F040 F2F14040 40404040 40404040    4040F040 40404040 40404040 40404040   * 80 21            0             *
+0000A0   40404040 40404040 40404040 404040F5    F5F5F540 D1D6C1D5 40E3D6E6 C5D94040   *               5555 JOAN TOWER  *
+0000C0   40404040 40404040 40F9F9F2 F1F140F2    F240F840 40F8F040 4040F0F0 F040F5F5   *         99211 22 8  80   000 55*
+0000E0   F5F540F5 F5F5F540 F5F5F5F5 40F5F5F5    F5404040 40404040 4040E3D6 E3C1D340   *55 5555 5555 5555         TOTAL *
+000100   C5D4D7D3 D6E8C5C5 40C3D6E4 D5E37A40    40404040 F5F5F5F5 F5F5F5F5 F5F5F5F5   *EMPLOYEE COUNT.     555555555555*
+000120   40404040 40404040 40404040 E3D6E3C1    D340C4C5 C4E4C3E3 C9D6D5E2 7A404040   *            TOTAL DEDUCTIONS.   *
+000140   4040F5F5 F5F5F5F5 F5F5F5F5 F5F54040    40404040 40404040 40404040 40404040   *  555555555555                  *
+000160   404040C2 D6D5E4E2 C5E27A40 40404040    F5F5F5F5 F5F5F5F5 F5F5F5F5 F5F5F5F5   *   BONUSES.     5555555555555555*
+000180   F5F5F5F5 F5F5F5F5 F5F5F5F5 F5F5F5F5    F5F5F5F5 F5F5F5F5 F5F5F5F5 F5F5F5F5   *55555555555555555555555555555555*
+  LINES    0001A0-000240    SAME AS ABOVE
+000260   F5F5F5F5 F5F5F5F5 F5F5F5F5 00000000    F5F5F5F5 F5F5F5F5 F5F5F5F5 F5F5F5F5   *555555555555....5555555555555555*
+000280   F5F5F5F5 F5F5F5F5 F5F5F5F5 F5F5F5F5    F5F5F5F5 F5F5F5F5 F5F5F5F5 F5F5F5F5   *55555555555555555555555555555555*
+  LINES    0002A0-000380    SAME AS ABOVE
+ 
