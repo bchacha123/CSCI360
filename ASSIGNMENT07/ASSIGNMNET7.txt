@@ -1,0 +1,311 @@
+                  J E S 2  J O B  L O G  --  S Y S T E M  2 9 6 4  --  N O D E  S V S C J E S 2
+ 
+17.21.14 JOB07914 ---- WEDNESDAY, 29 JUL 2020 ----
+17.21.14 JOB07914  IRR010I  USERID KC03C9C  IS ASSIGNED TO THIS JOB.
+17.21.14 JOB07914  ICH70001I KC03C9C  LAST ACCESS AT 17:19:17 ON WEDNESDAY, JULY 29, 2020
+17.21.14 JOB07914  $HASP373 KC03C9C  STARTED - INIT 3    - CLASS A        - SYS 2964
+17.21.14 JOB07914  $HASP395 KC03C9C  ENDED - RC=0000
+------ JES2 JOB STATISTICS ------
+  29 JUL 2020 JOB EXECUTION DATE
+          135 CARDS READ
+          193 SYSOUT PRINT RECORDS
+            0 SYSOUT PUNCH RECORDS
+           18 SYSOUT SPOOL KBYTES
+         0.00 MINUTES EXECUTION TIME
+        1 //KC03C9C JOB ,'BRAYAN CHACHA G',MSGCLASS=H                             JOB07914
+        2 //JSTEP01  EXEC PGM=ASSIST
+        3 //STEPLIB  DD DSN=KC00NIU.ASSIST.LOADLIB,DISP=SHR
+        4 //SYSPRINT DD SYSOUT=*
+        5 //SYSIN    DD *
+          //*
+        6 //FT05F001 DD DSN=KC02322.CSCI360.DATASU20(DATA6),DISP=SHR
+          //*
+        7 //FT06F001 DD SYSOUT=*
+          //*
+        8 //SYSPRINT DD SYSOUT=*
+        9 //
+ICH70001I KC03C9C  LAST ACCESS AT 17:19:17 ON WEDNESDAY, JULY 29, 2020
+IEFA111I KC03C9C IS USING THE FOLLOWING JOB RELATED SETTINGS:
+         SWA=ABOVE,TIOT SIZE=32K,DSENQSHR=DISALLOW,GDGBIAS=JOB
+IEF236I ALLOC. FOR KC03C9C JSTEP01
+IGD103I SMS ALLOCATED TO DDNAME STEPLIB
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF237I JES2 ALLOCATED TO SYSIN
+IGD103I SMS ALLOCATED TO DDNAME FT05F001
+IEF237I JES2 ALLOCATED TO FT06F001
+IEF237I JES2 ALLOCATED TO SYSPRINT
+IEF142I KC03C9C JSTEP01 - STEP WAS EXECUTED - COND CODE 0000
+IGD104I KC00NIU.ASSIST.LOADLIB                       RETAINED,  DDNAME=STEPLIB
+IEF285I   KC03C9C.KC03C9C.JOB07914.D0000102.?          SYSOUT
+IEF285I   KC03C9C.KC03C9C.JOB07914.D0000101.?          SYSIN
+IGD104I KC02322.CSCI360.DATASU20                     RETAINED,  DDNAME=FT05F001
+IEF285I   KC03C9C.KC03C9C.JOB07914.D0000103.?          SYSOUT
+IEF285I   KC03C9C.KC03C9C.JOB07914.D0000104.?          SYSOUT
+IEF373I STEP/JSTEP01 /START 2020211.1721
+IEF032I STEP/JSTEP01 /STOP  2020211.1721
+        CPU:     0 HR  00 MIN  00.00 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+        VIRT:   584K  SYS:   248K  EXT:        0K  SYS:    12052K
+        ATB- REAL:                  4128K  SLOTS:                     0K
+             VIRT- ALLOC:      13M SHRD:       0M
+IEF375I  JOB/KC03C9C /START 2020211.1721
+IEF033I  JOB/KC03C9C /STOP  2020211.1721
+        CPU:     0 HR  00 MIN  00.00 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+******************************************************************
+*                                                                *
+*  CSCI 360               ASSIGNMENT 7              SUMMER 2020  *
+*                                                                *
+*  PROGRAMMER NAME: BRAYAN CHACHA GONZALEZ                       *
+*                                                                *
+*             DATE: 08/05/20                                     *
+*                                                                *
+*     PROGRAM NAME: PAYROLL3                                     *
+*                                                                *
+*         FUNCTION: EXTERNAL SUBROUTINES                         *
+*                                                                *
+*            NOTES:                                              *
+*                                                                *
+******************************************************************
+*        COL. 10                                                 *
+*        |     COL. 16        COMMENTS                           *
+*        |     |              |                                  *
+*        v     v              v                                  *
+******************************************************************
+*
+$TBLNTRY DSECT                DUMMY TEMPLATE FOR EMPLOYEE TABLE
+$TNAME   DS    CL25           EMPLOYEE NAME
+$TID     DS    PL4            EMPLOYEE ID
+$THRPAY  DS    PL3            EMPLOYEE PAY RATE
+$THOURS  DS    PL3            EMPLOYEE HOURS WORKED
+$TDEDUCT DS    PL3            EMPLOYEE DEDUCTION AMOUNT
+$TBONUS  DS    PL3            EMPLOYEE BONUS AMOUNT
+*
+*
+PAYROLL3 CSECT
+*                             STANDARD ENTRY
+*
+         STM   14,12,12(13)   SAVE REGS IN CALLER'S SAVE AREA
+         LR    12,15          COPY CSECT ADDRESS INTO R12
+         USING PAYROLL3,12    ESTABLISH R12 AS THE BASE REG
+         LA    14,SAVE1       R14 POINTS TO THIS CSECT'S SAVE AREA
+         ST    14,8(,13)      STORE ADDRESS OF THIS CSECT'S SAVE AREA
+         ST    13,4(,14)      STORE ADDRESS OF THE CALLER'S SAVE AREA
+         LR    13,14          POINT R13 AT THIS CSECT'S SAVE AREA
+*
+         LA    11,4095(,12)
+         LA    11,1(,11)
+         USING PAYROLL3+4069,11
+*
+* CALLING SUBPROGRAM BUILDTBL
+*
+         LA    1,PARMS1         R1 -> PARMS LIST 1
+         L     15,=V(BUILDTBL)  R15-> BUILDTBL
+         BALR  14,15            BRANCH AND LINK TO SUBROGRAM
+*
+         SR    15,15          R15 RETURNS CODE OF 0
+         L     13,4(,13)      POINT R13 TO CALLER'S SAVE AREA
+         L     14,12(,13)     RESTORE REGISTER 13
+         LM    0,12,20(13)    RESTORE R0 THRU R12
+*
+         BR    14             RETURN TO CALLER
+*
+         LTORG
+*
+SAVE1    DS    18F            PROGRAM'S SAVE AREA
+*
+EMPTBL   DC    50CL41'*'      50 EMPLOYEE TABLE ENTRIES
+*
+PWITHH   DC    PL3'0'         PACKED WITHHOLDING PERCENT
+*
+NUMENTS  DC    F'0'
+*
+PARMS1   DC    A(EMPTBL,NUMENTS,PWITHH)
+*
+******************************************************************
+*                                                                *
+*              EXTERNAL SUBPROGRAM: BUILDTBL                     *
+*                                                                *
+******************************************************************
+BUILDTBL CSECT
+*                             STANDARD ENTRY
+*
+         STM   14,12,12(13)   SAVE REGS IN CALLER'S SAVE AREA
+         LR    12,15          COPY CSECT ADDRESS INTO R12
+         USING BUILDTBL,12    ESTABLISH R12 AS THE BASE REG
+         LA    14,SAVE2       R14 POINTS TO THIS CSECT'S SAVE AREA
+         ST    14,8(,13)      STORE ADDRESS OF THIS CSECT'S SAVE AREA
+         ST    13,4(,14)      STORE ADDRESS OF THE CALLER'S SAVE AREA
+         LR    13,14          POINT R13 AT THIS CSECT'S SAVE AREA
+*
+         LM    2,4,0(1)       R2 ->  EMPTBL
+*                             R3 ->  NUMENTS
+*                             R4 ->  PWITHH
+*
+         USING $TBLNTRY,2
+*
+         SR    5,5            ENTRY COUNTER REGISRER
+*
+         XREAD BUFFER,80        READ FIRST WITHHILDING RECORD
+         PACK  0(3,4),BUFFER(5) PACK WITHHOLDING PERCENT
+*
+         XREAD BUFFER,80
+LOOP1    BNZ   ENDLOOP1
+*
+         LA    5,1(,5)         INCREMENT ENTRY COUNTER
+*
+         LA    2,41(,2)        R2 -> NEXT TABLE ENTRY
+*
+         XREAD BUFFER,80       READ NEXT RECORD
+         B     LOOP1           BRANCH BACK TO THE TOP OF THE READ LOOP
+*
+*
+ENDLOOP1 SR    15,15          R15 RETURNS CODE OF 0
+         L     13,4(,13)     POINT R13 TO CALLER'S SAVE AREA
+         L     14,12(,13)     RESTORE REGISTER 13
+         LM    0,12,20(13)    RESTORE R0 THRU R12
+*
+         BR    14             RETURN TO CALLER
+*
+         LTORG
+*
+SAVE2    DS    18F            PROGRAM'S SAVE AREA
+*
+BUFFER   DS    CL80
+*
+         END   PAYROLL3
+*** ASSIST 4.0/A2-05/15/82  470/V7A/0:OS/VS2  INS=SDFP7/X=BGHO, CHECK/TRC/=1180, OPTS=CDKMPR FROM PENN ST*NIU COMPSCI*LT
+ 
+                                                                                                               PAGE    1
+  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+                                      1 ******************************************************************
+                                      2 *                                                                *
+                                      3 *  CSCI 360               ASSIGNMENT 7              SUMMER 2020  *
+                                      4 *                                                                *
+                                      5 *  PROGRAMMER NAME: BRAYAN CHACHA GONZALEZ                       *
+                                      6 *                                                                *
+                                      7 *             DATE: 08/05/20                                     *
+                                      8 *                                                                *
+                                      9 *     PROGRAM NAME: PAYROLL3                                     *
+                                     10 *                                                                *
+                                     11 *         FUNCTION: EXTERNAL SUBROUTINES                         *
+                                     12 *                                                                *
+                                     13 *            NOTES:                                              *
+                                     14 *                                                                *
+                                     15 ******************************************************************
+                                     16 *        COL. 10                                                 *
+                                     17 *        |     COL. 16        COMMENTS                           *
+                                     18 *        |     |              |                                  *
+                                     19 *        v     v              v                                  *
+                                     20 ******************************************************************
+                                     21 *
+000000                               22 $TBLNTRY DSECT                DUMMY TEMPLATE FOR EMPLOYEE TABLE
+000000                               23 $TNAME   DS    CL25           EMPLOYEE NAME
+000019                               24 $TID     DS    PL4            EMPLOYEE ID
+00001D                               25 $THRPAY  DS    PL3            EMPLOYEE PAY RATE
+000020                               26 $THOURS  DS    PL3            EMPLOYEE HOURS WORKED
+000023                               27 $TDEDUCT DS    PL3            EMPLOYEE DEDUCTION AMOUNT
+000026                               28 $TBONUS  DS    PL3            EMPLOYEE BONUS AMOUNT
+                                     29 *
+                                     30 *
+000000                               31 PAYROLL3 CSECT
+                                     32 *                             STANDARD ENTRY
+                                     33 *
+000000 90EC D00C            0000C    34          STM   14,12,12(13)   SAVE REGS IN CALLER'S SAVE AREA
+000004 18CF                          35          LR    12,15          COPY CSECT ADDRESS INTO R12
+000000                               36          USING PAYROLL3,12    ESTABLISH R12 AS THE BASE REG
+000006 41E0 C03C            0003C    37          LA    14,SAVE1       R14 POINTS TO THIS CSECT'S SAVE AREA
+00000A 50E0 D008            00008    38          ST    14,8(,13)      STORE ADDRESS OF THIS CSECT'S SAVE AREA
+00000E 50D0 E004            00004    39          ST    13,4(,14)      STORE ADDRESS OF THE CALLER'S SAVE AREA
+000012 18DE                          40          LR    13,14          POINT R13 AT THIS CSECT'S SAVE AREA
+                                     41 *
+000014 41B0 CFFF            00FFF    42          LA    11,4095(,12)
+000018 41B0 B001            00001    43          LA    11,1(,11)
+000FE5                               44          USING PAYROLL3+4069,11
+                                     45 *
+                                     46 * CALLING SUBPROGRAM BUILDTBL
+                                     47 *
+00001C 4110 C890            00890    48          LA    1,PARMS1         R1 -> PARMS LIST 1
+000020 58F0 C038            00038    49          L     15,=V(BUILDTBL)  R15-> BUILDTBL
+000024 05EF                          50          BALR  14,15            BRANCH AND LINK TO SUBROGRAM
+                                     51 *
+000026 1BFF                          52          SR    15,15          R15 RETURNS CODE OF 0
+                                                                                                               PAGE    2
+  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+000028 58D0 D004            00004    53          L     13,4(,13)      POINT R13 TO CALLER'S SAVE AREA
+00002C 58E0 D00C            0000C    54          L     14,12(,13)     RESTORE REGISTER 13
+000030 980C D014            00014    55          LM    0,12,20(13)    RESTORE R0 THRU R12
+                                     56 *
+000034 07FE                          57          BR    14             RETURN TO CALLER
+                                     58 *
+                                     59          LTORG
+000038 000008A0                      60                =V(BUILDTBL)
+                                     61 *
+00003C                               62 SAVE1    DS    18F            PROGRAM'S SAVE AREA
+                                     63 *
+000084 5C40404040404040              64 EMPTBL   DC    50CL41'*'      50 EMPLOYEE TABLE ENTRIES
+                                     65 *
+000886 00000C                        66 PWITHH   DC    PL3'0'         PACKED WITHHOLDING PERCENT
+                                     67 *
+00088C 00000000                      68 NUMENTS  DC    F'0'
+                                     69 *
+000890 000000840000088C              70 PARMS1   DC    A(EMPTBL,NUMENTS,PWITHH)
+                                     71 *
+                                     72 ******************************************************************
+                                     73 *                                                                *
+                                     74 *              EXTERNAL SUBPROGRAM: BUILDTBL                     *
+                                     75 *                                                                *
+                                     76 ******************************************************************
+0008A0                               77 BUILDTBL CSECT
+                                     78 *                             STANDARD ENTRY
+                                     79 *
+0008A0 90EC D00C            0000C    80          STM   14,12,12(13)   SAVE REGS IN CALLER'S SAVE AREA
+0008A4 18CF                          81          LR    12,15          COPY CSECT ADDRESS INTO R12
+0008A0                               82          USING BUILDTBL,12    ESTABLISH R12 AS THE BASE REG
+0008A6 41E0 C058            008F8    83          LA    14,SAVE2       R14 POINTS TO THIS CSECT'S SAVE AREA
+0008AA 50E0 D008            00008    84          ST    14,8(,13)      STORE ADDRESS OF THIS CSECT'S SAVE AREA
+0008AE 50D0 E004            00004    85          ST    13,4(,14)      STORE ADDRESS OF THE CALLER'S SAVE AREA
+0008B2 18DE                          86          LR    13,14          POINT R13 AT THIS CSECT'S SAVE AREA
+                                     87 *
+0008B4 9824 1000            00000    88          LM    2,4,0(1)       R2 ->  EMPTBL
+                                     89 *                             R3 ->  NUMENTS
+                                     90 *                             R4 ->  PWITHH
+                                     91 *
+000000                               92          USING $TBLNTRY,2
+                                     93 *
+0008B8 1B55                          94          SR    5,5            ENTRY COUNTER REGISRER
+                                     95 *
+0008BA E000 C0A0 0050 00940          96          XREAD BUFFER,80        READ FIRST WITHHILDING RECORD
+0008C0 F224 4000 C0A0 00000 00940    97          PACK  0(3,4),BUFFER(5) PACK WITHHOLDING PERCENT
+                                     98 *
+0008C6 E000 C0A0 0050 00940          99          XREAD BUFFER,80
+0008CC 4770 C042            008E2   100 LOOP1    BNZ   ENDLOOP1
+                                    101 *
+0008D0 4150 5001            00001   102          LA    5,1(,5)         INCREMENT ENTRY COUNTER
+                                    103 *
+0008D4 4120 2029            00029   104          LA    2,41(,2)        R2 -> NEXT TABLE ENTRY
+                                    105 *
+0008D8 E000 C0A0 0050 00940         106          XREAD BUFFER,80       READ NEXT RECORD
+0008DE 47F0 C02C            008CC   107          B     LOOP1           BRANCH BACK TO THE TOP OF THE READ LOOP
+                                    108 *
+                                    109 *
+                                                                                                               PAGE    3
+  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+0008E2 1BFF                         110 ENDLOOP1 SR    15,15          R15 RETURNS CODE OF 0
+0008E4 58D0 D004            00004   111          L     13,4(,13)     POINT R13 TO CALLER'S SAVE AREA
+0008E8 58E0 D00C            0000C   112          L     14,12(,13)     RESTORE REGISTER 13
+0008EC 980C D014            00014   113          LM    0,12,20(13)    RESTORE R0 THRU R12
+                                    114 *
+0008F0 07FE                         115          BR    14             RETURN TO CALLER
+                                    116 *
+                                    117          LTORG
+                                    118 *
+0008F8                              119 SAVE2    DS    18F            PROGRAM'S SAVE AREA
+                                    120 *
+000940                              121 BUFFER   DS    CL80
+                                    122 *
+                                    123          END   PAYROLL3
+***  NO   STATEMENTS FLAGGED -  NO   WARNINGS,  NO   ERRORS
+*** DYNAMIC CORE AREA USED:  LOW:    5128 HIGH:     736 LEAVING:  487704 FREE BYTES. AVERAGE:       47 BYTES/STMT ***
+*** ASSEMBLY TIME =    0.000 SECS,   124000 STATEMENTS/SEC ***
+*** PROGRAM EXECUTION BEGINNING - ANY OUTPUT BEFORE EXECUTION TIME MESSAGE IS PRODUCED BY USER PROGRAM ***
+*** EXECUTION TIME =    0.000 SECS.       273 INSTRUCTIONS EXECUTED -   273000 INSTRUCTIONS/SEC ***
+*** AM004 - NORMAL USER TERMINATION BY RETURN ***
