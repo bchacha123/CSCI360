@@ -1,0 +1,104 @@
+//KC03C9C JOB ,'BRAYAN CHACHA G',MSGCLASS=H
+//JSTEP01  EXEC PGM=ASSIST
+//STEPLIB  DD DSN=KC00NIU.ASSIST.LOADLIB,DISP=SHR
+//SYSPRINT DD SYSOUT=*
+//SYSIN    DD *
+******************************************************************
+*                                                                *
+*  CSCI 360               ASSIGNMENT 6              SUMMER 2020  *
+*                                                                *
+*  PROGRAMMER NAME: BRAYAN CHACHA GONZALEZ                       *
+*                                                                *
+*             DATE: 7/17/20                                      *
+*                                                                *
+*     PROGRAM NAME: PAYROLL1                                     *
+*                                                                *
+*         FUNCTION: MULTIPLICATION AND DIVISION                  *
+*                                                                *
+*           NOTES:                                               *
+*                                                                *
+******************************************************************
+*        COL. 10                                                 *
+*        |     COL. 16         COMMENTS                          *
+*        |     |               |                                 *
+*        v     v               v                                 *
+******************************************************************
+PAYROLL1 CSECT
+         USING PAYROLL1,15
+         SR    2,2             CLEARING REG 2 FOR EMP NAME
+         SR    3,3             CLEARING REG 3 FOR EMP ID
+         SR    4,4             CLEARING REG 4 FOR HOURLY PAY
+         SR    5,5             CLEARING REG 5 FOR NUM OF HOURS W
+         SR    6,6             CLEARING REG 6 FOR DEDUC AMOUNT
+         SR    7,7             CLEARING REG 7 FOR BONUS
+         SR    8,8             CLEARING REG 8 FOR COUNT OF EMP
+*                              CREATING THE LOOP TO STARTING
+*                              READING THE RECORDS
+*
+RLOOP    XREAD RECORD,80       READING DATA FROM RECORDS
+         BC    B'0100',ELOOP   BRANCH TO ELOOP IF EOF
+         LA    1,RECORD        REG1 POINTER TO RECORDS
+         A     8,=F'1'         COUNTER FOR NUM OF EMPLOYEES
+*
+         XDECI 2,0(1)       EMPLOYEE NAME COLUMN 1-25
+         XDECO 2,BUFFER        READING FROM BUFFER (INPUT FILE)
+*
+         XDECI 3,0(1)          EMPLOYEE ID
+         XDECO 3,BUFFER+25     READING FROM BUFFER (INPUT FILE)
+*                              COLUMN 26-30
+*
+         XDECI 4,0(1)          HOULY PAY
+         XDECO 4,BUFFER+31     READING FROM BUFFER (INPUT FILE)
+*                              COLUMN 31-33
+*
+         XDECI 5,0(1)          NUMBER OF HOURS WORKED
+         XDECO 5,BUFFER+33     READING FROM BUFFER (INPUT FILE)
+*                              COLUMN 34-36
+*
+         XDECI 6,0(1)          DEDUCTION AMOUNT
+         XDECO 6,BUFFER+35     READING FROM BUFFER (INPUT FILE)
+*                              COLUMN 37-39
+*
+         XDECI 7,0(1)          BONUS AMOUNT
+         XDECO 7,BUFFER+37     READING FROM BUFFER (INPUT FILE)
+*                              COLUMN 40-43
+         B     RLOOP           BRANCHING BACK TO THE RLOOP
+ELOOP    DS    0H
+RECORD   DS    CL80
+*
+SPACES   DC    C'0'
+*
+BUFFER   DS    CL84
+*
+TOTALE   DC    C'        TOTAL EMPLOYEE COUNT:     '
+TOTAL    DS    CL12
+*
+DECUCE   DC    C'            TOTAL DEDUCTIONS:     '
+DECUC    DS    CL12
+*
+BONUSE   DC    C'                     BONUSES:     '
+BONUS    DS    CL12
+*
+TOGROE   DS    C'             TOTAL GROSS PAY:     '
+TOGRO    DS    CL12
+*
+TWHOLE   DS    C'           TOTAL WITHHOLDING:     '
+TWHOL    DS    CL12
+*
+TNPAYE   DS    C'               TOTAL NET PAY:     '
+TNPAY    DS    CL12
+*
+AVGPAE   DS    C'           AVERAGE GROSS PAY:     '
+AVGPA    DS    CL12
+*
+AVGNTE   DS    C'             AVERAGE NET PAY:     '
+AVGNT    DS    CL12
+         END   PAYROLL1
+/*
+//*
+//FT05F001 DD DSN=KC02322.CSCI360.DATASU20(DATA5),DISP=SHR
+//*
+//FT06F001 DD SYSOUT=*
+//*
+//SYSPRINT DD SYSOUT=*
+//

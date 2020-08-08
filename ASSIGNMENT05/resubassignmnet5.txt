@@ -1,0 +1,221 @@
+//KC03C9C JOB ,'BRAYAN CHACHA G',MSGCLASS=H
+//JSTEP01  EXEC PGM=ASSIST
+//STEPLIB  DD DSN=KC00NIU.ASSIST.LOADLIB,DISP=SHR
+//SYSPRINT DD SYSOUT=*
+//SYSIN    DD *
+******************************************************************
+*                                                                *
+*  CSCI 360               ASSIGNMENT 6              SUMMER 2020  *
+*                                                                *
+*  PROGRAMMER NAME: BRAYAN CHACHA GONZALEZ                       *
+*                                                                *
+*             DATE: 7/17/20                                      *
+*                                                                *
+*     PROGRAM NAME: PAYROLL1                                     *
+*                                                                *
+*         FUNCTION: MULTIPLICATION AND DIVISION                  *
+*                                                                *
+*            NOTES: COULN'T GET THE TOTAL OF THE GROSS COLLUMN,  *
+*                   NET, AND TOTAL AND AVERAGES                  *
+*                                                                *
+*   REGISTER USAGE:                                              *
+*                   R2 HOURLY PAY                                *
+*                   R3 AMOUNT OF HOURS WORKED                    *
+*                   R4 DEDUCTION AMOUNT                          *
+*                   R5 BONUS AMOUNT                              *
+*                   R6 TOTAL AMOUNT OF BONUS                     *
+*                   R7 NET AMOUNT                                *
+*                  R11 GROSS AMOUNT                              *
+*                  R12 INPUT DATA                                *
+*                  R13 TOTAL AMOUNT OF DEDUCTION                 *
+******************************************************************
+*        COL. 10                                                 *
+*        |     COL. 16          COMMENTS                         *
+*        |     |                |                                *
+*        v     v                v                                *
+******************************************************************
+PAYROLL1 CSECT
+         USING PAYROLL1,15
+*                               SETTING REGS TO 0, CLEARING
+         LA    2,0
+         LA    3,0
+         LA    4,0
+         LA    5,0
+         LA    6,0
+         LA    7,0
+         LA    8,0
+         LA    9,0
+         LA    10,0
+         LA    11,0
+         LA    12,0
+         LA    13,0
+******************************************************************
+         XREAD BUFFER,80            READING 80 BYTES FROM INPUT
+         XDECI 12,BUFFER            INPUT DATA TO REG12
+*
+         XREAD BUFFER,80            READING FIRST INPUT NAMES
+*
+RLOOP    BC    B'0100',ELOOP        BRANCH TO ELOOP IF EOF
+*
+         MVC   EMPNAME(25),BUFFER   COPYING DATA TO TABLE EMPNAME
+         MVC   EMPID(5),BUFFER+25   COPYING DATA TO GET EMPID
+*
+         XDECI 2,BUFFER+31          SETTING HR PAY TO REG2
+         XDECO 2,HRPAY              PRINT HR PAY TO PRTLN
+*
+         XDECI 3,BUFFER+34          SETTING HOURS WORKED TO REG3
+         XDECO 3,NHOUR              PRINT # HR'S WORKED TO PRTLN
+*
+         XDECI 4,BUFFER+37          SETTING DEDUC TO REG4
+         AR    13,4                 ADDING DEDUC AND PLACING IN RE13
+*
+         XDECO 4,ODEDUCT            PRINT DEDUC TO PRTLN
+         XDECI 5,BUFFER+40          SETTING BONUS TO REG5
+         AR    6,5                  ADDING BONUS AND PLACING IN RE6
+         XDECO 5,OBONUS             PRINT BONUS TO PRTLN
+*
+******************************************************************
+*                      CALCULATIONS                              *
+******************************************************************
+*
+         SR    10,10                CLEARING REG10
+         SR    11,11                CLEARING REG11
+         LR    11,2                 LOAD REG2 INTO REG11
+         MR    10,3                 REG11 x REG3
+         SR    11,4                 SUB REG4 FROM REG11
+         AR    11,5                 ADD REG5 TO REG11
+*
+         XDECO 11,OGROSS            GROSS PAY TO REG11
+*
+         LA    2,0                  WRONG TRYING TO GET TOTAL OF
+         AR    2,11                 GROSS
+*
+         LR    7,11                 CALCULATING NET PAY
+         MR    10,12
+         M     10,=F'1'             MULTIPLYING WITHOLD
+         D     10,=F'100'
+         LR    8,11
+         SR    7,11
+         XDECO 7,ONET               PRINT NETPAY TO PRTLN
+*
+         SR    7,11
+         XDECO 7,OWITH              PRINT WITHOLD TO PRNT
+*
+         A     9,=F'1'              EMPLOYEE COUNTER
+         XDECO 9,TOTEMP              PRINT NUM OF EMPLOYEES
+*
+         XPRNT PRTLINE,133          PRNT 133 FROM PTRLINE
+         XREAD BUFFER,80            BUFFER 80 BYTES
+*
+         BC    B'1111',RLOOP        BRANCH BACK TO RLOOP
+ELOOP    DS    0H
+*
+         XDECO 13,TOTDEDCT          SENDING TO PTRLN, BOTTOM
+         XDECO 6,TOTBONUS
+         XDECO 2,TOTGRPAY
+         XPRNT OLINE,133            PRINT TOTAL EMPLOYEES
+         XPRNT OLINE2,133           PRINT TOTAL DEDUCTIONS
+         XPRNT OLINE3,133           PRINT TOTAL BONUSES
+         XPRNT OLINE4,133           PRINT TOTAL GROSS PAY
+         XPRNT OLINE5,133           PRINT TOTAL WITHOLDING
+         XPRNT OLINE6,133           PRINT TOTAL NETPAY
+         XPRNT OLINE7,133           PRINT TOTAL GROSS P AVERAGE
+         XPRNT OLINE8,133           PRINT TOTAL NET PAY AVERAGE
+*
+         BCR   B'1111',14           GOING BACK TO THE OSYSTEM
+         LTORG                      ORGANIZER LITERAL
+*
+******************************************************************
+*
+BUFFER   DS    CL80                DEFINING DATA INPUT
+*
+PRTLINE  DC    C'0'
+*
+EMPNAME  DS     CL25               STORAGE FOR EMP NAME
+         DC    C' '
+*
+EMPID    DS    CL5                 STORAGE FOR EMP ID
+         DC    2C' '
+*
+HRPAY    DS    CL12                STORAGE FOR HOURLY PAY
+         DC    2C' '
+*
+NHOUR    DS    CL12                STORAGE FOR # OF HOURS
+         DC    2C' '
+*
+ODEDUCT  DS    CL12                STORAGE FOR DEDUCTIONS
+         DC    2C' '
+*
+OBONUS   DS    CL12                STORAGE FOR BONUS
+         DC    2C' '
+*
+OGROSS   DS    CL12                STORAGE FOR GROSS PAY
+         DC    2C' '
+*
+OWITH    DS    CL12                STORAGE FOR WITHOLD
+         DC    2C' '
+*
+ONET     DS    CL12                STORAGE FOR NETPAY
+         DC    3C' '
+*
+******************************************************************
+*                      BOTTOM HEADER                             *
+******************************************************************
+OLINE    DC    C'0'
+         DC    15C' '
+         DC    C'TOTAL EMPLOYEE COUNT: '
+*
+TOTEMP   DS    CL12
+         DC    84C' '
+*
+OLINE2   DC    C'0'
+         DC    19C' '
+         DC    C'TOTAL DEDUCTIONS: '
+TOTDEDCT DS    CL12
+         DC    84C' '
+*
+OLINE3   DC    C'0'
+         DC    22C' '
+         DC    C'TOTAL BONUSES: '
+TOTBONUS DS    CL12
+         DC    84C' '
+*
+OLINE4   DC    C'0'
+         DC    20C' '
+         DC    C'TOTAL GROSS PAY: '
+TOTGRPAY DS    CL12
+         DC    84C' '
+*
+OLINE5   DC    C'0'
+         DC    19C' '
+         DC    C'TOTAL WITHOLDING: '
+TOTWITH  DS    CL12
+         DC    84C' '
+*
+OLINE6   DC    C'0'
+         DC    22C' '
+         DC    C'TOTAL NET PAY: '
+TOTNPAY  DS    CL12
+         DC    84C' '
+*
+OLINE7   DC    C'0'
+         DC    18C' '
+         DC    C'AVERAGE GROSS PAY: '
+TOAVGPA  DS    CL12
+         DC    84C' '
+*
+OLINE8   DC    C'0'
+         DC    20C' '
+         DC    C'AVERAGE NET PAY: '
+TOAVGNET DS    CL12
+         DC    84C' '
+*
+         END   PAYROLL1
+/*
+//*
+//FT05F001 DD DSN=KC02322.CSCI360.DATASU20(DATA5),DISP=SHR
+//*
+//FT06F001 DD SYSOUT=*
+//*
+//SYSPRINT DD SYSOUT=*
+// 
