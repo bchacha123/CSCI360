@@ -1,2 +1,2 @@
 # CSCI360_ASSIGNMENTS
-Summer 2020, NIU CSCI 360 Assignments, with Decker
+CSCI 360 Programming in Assembly, with professor Geoffery D. Decker at Northern Illinois Univeristy. There's a total of 7 assignments, this course was taken in the summer. 
